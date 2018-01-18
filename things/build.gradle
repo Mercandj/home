@@ -33,6 +33,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compileOnly 'com.google.android.things:androidthings:+'
+    compileOnly 'com.google.android.things:androidthings:0.6.1-devpreview'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+
+task adbLaunchApp(type: Exec) {
+    group = "adb"
+    commandLine 'adb', 'shell', 'monkey -p com.mercandalli.android.home -c android.intent.category.LAUNCHER 1'
+}
+
+task adbKeyHome(type: Exec) {
+    group = "adb"
+    commandLine 'adb', 'shell', 'input keyevent 3'
 }
