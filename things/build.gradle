@@ -39,7 +39,16 @@ dependencies {
 
 task adbLaunchApp(type: Exec) {
     group = "adb"
-    commandLine 'adb', 'shell', 'monkey -p com.mercandalli.android.home -c android.intent.category.LAUNCHER 1'
+    executable = project.android.getAdbExe().toString()
+    args = ["shell", "am", "start", "-n", "com.mercandalli.android.home/.main.MainActivity"]
+    // adb shell am start -n com.mercandalli.android.home/.main.MainActivity
+}
+
+task adbLaunchLunarGame(type: Exec) {
+    group = "adb"
+    executable = project.android.getAdbExe().toString()
+    args = ["shell", "am", "start", "-n", "com.mercandalli.lunar.lander/com.unity3d.player.UnityPlayerActivity"]
+    // adb shell am start -n com.mercandalli.lunar.lander/com.unity3d.player.UnityPlayerActivity
 }
 
 task adbKeyHome(type: Exec) {
