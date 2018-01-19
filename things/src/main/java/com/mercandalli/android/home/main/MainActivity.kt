@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -13,6 +14,7 @@ import com.mercandalli.android.home.R
 import com.mercandalli.android.home.application.AppUtils.launchApp
 import com.mercandalli.android.home.io_input_output_gpio.GpioManager
 import com.mercandalli.android.home.io_input_output_gpio.GpioManagerImpl
+import com.mercandalli.android.home.log.LogManagerImpl
 import com.mercandalli.android.home.wifi.WifiUtils.Companion.wifiIpAddress
 
 class MainActivity : Activity() {
@@ -25,6 +27,7 @@ class MainActivity : Activity() {
     private var logs: TextView? = null
 
     private val gpioManager = GpioManagerImpl.instance
+    private val logManager = LogManagerImpl.instance
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +46,7 @@ class MainActivity : Activity() {
         }
 
         logs = findViewById(R.id.activity_main_logs)
+        logs!!.movementMethod = ScrollingMovementMethod()
         findViewById<TextView>(R.id.activity_main_ip)!!.text = "Ip: " + wifiIpAddress(this)
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
 
@@ -62,11 +66,7 @@ class MainActivity : Activity() {
     }
 
     private fun runnableJob() {
-        gpioManager.write(gpio!!, value)
-        value = !value
-        val read = gpioManager.read(gpio!!)
-        gpio7TextView!!.text = if (read) "Gpio7: rp3 output -> ON" else "Gpio7: rp3 output -> OFF"
-        Log.d("jm/debug", "Read: " + read)
+        logs!!.text = logManager.systemLogs
         handler.postDelayed(runnable, 1_000)
     }
 

@@ -7,6 +7,12 @@ class LogManagerImpl private constructor() : LogManager {
 
     private val logsArray = ArrayList<String>()
 
+    override val logs: String
+        get() = getLogsInternal()
+
+    override val systemLogs: String
+        get() = getSystemLogsInternal()
+
     override fun log(tag: String, log: String) {
         var log = log
         log = "[$tag] $log"
@@ -31,16 +37,16 @@ class LogManagerImpl private constructor() : LogManager {
         Log.d("jm/debug", log, e)
     }
 
-
-    override val logs: String
-        get() = getLogsInternal()
-
     private fun getLogsInternal(): String {
         val stringBuilder = StringBuilder()
         for (log in logs) {
             stringBuilder.append(log).append("\n")
         }
         return stringBuilder.toString()
+    }
+
+    private fun getSystemLogsInternal(): String {
+        return LogsUtils.logs()
     }
 
     companion object {

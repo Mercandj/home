@@ -4,6 +4,8 @@ interface LogManager {
 
     val logs: String
 
+    val systemLogs: String
+
     fun log(tag: String, log: String)
 
     fun log(log: String)
