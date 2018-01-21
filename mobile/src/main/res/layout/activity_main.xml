@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mercandalli.android.home.main.MainActivity">
+    tools:context="com.mercandalli.android.home.MainActivity">
 
     <TextView
         android:id="@+id/sample_text"
@@ -16,4 +16,27 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/activity_main_gpio7_refresh_rate_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:text="Gpio7 refresh rate: 300 ms" />
+
+        <SeekBar
+            android:id="@+id/activity_activity_gpio7_refresh_rate_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3000"
+            android:progress="300" />
+
+    </LinearLayout>
+
+</FrameLayout>

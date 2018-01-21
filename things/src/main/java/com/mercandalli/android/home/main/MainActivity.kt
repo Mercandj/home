@@ -2,6 +2,7 @@ package com.mercandalli.android.home.main
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.ScrollingMovementMethod
@@ -10,24 +11,31 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import com.google.android.things.pio.Gpio
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.mercandalli.android.home.R
 import com.mercandalli.android.home.application.AppUtils.launchApp
 import com.mercandalli.android.home.io_input_output_gpio.GpioManager
 import com.mercandalli.android.home.io_input_output_gpio.GpioManagerImpl
-import com.mercandalli.android.home.log.LogManagerImpl
 import com.mercandalli.android.home.wifi.WifiUtils.Companion.wifiIpAddress
+
 
 class MainActivity : Activity() {
 
     private var gpio: Gpio? = null
     private var value: Boolean = false
     private val handler = Handler()
-    private var runnable: Runnable? = null
+    private var runnableUpdateGpio7: Runnable? = null
     private var gpio7TextView: TextView? = null
     private var logs: TextView? = null
 
     private val gpioManager = GpioManagerImpl.instance
-    private val logManager = LogManagerImpl.instance
+    private var gpio7RefreshRate = 300
+
+    private val valueEventListener = createValueEventListener()
+    private val databaseReferenceGpio = FirebaseDatabase.getInstance().getReference("gpio")
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +59,17 @@ class MainActivity : Activity() {
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
 
         gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
-        runnable = Runnable { runnableJob() }
-        handler.post(runnable)
+        runnableUpdateGpio7 = Runnable { runnableJob() }
+        handler.post(runnableUpdateGpio7)
+
+        databaseReferenceGpio.child("7").addValueEventListener(valueEventListener)
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(runnableUpdateGpio7)
+        gpioManager.close(gpio!!)
+        databaseReferenceGpio.child("7").removeEventListener(valueEventListener)
+        super.onDestroy()
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
@@ -66,14 +83,25 @@ class MainActivity : Activity() {
     }
 
     private fun runnableJob() {
-        logs!!.text = logManager.systemLogs
-        handler.postDelayed(runnable, 1_000)
+        gpioManager.write(gpio!!, value)
+        gpio7TextView!!.text = "Gpio7 refresh rate " + gpio7RefreshRate + " ms : " + if (value) "on" else "off"
+        value = !value
+
+        handler.removeCallbacks(runnableUpdateGpio7)
+        handler.postDelayed(runnableUpdateGpio7, gpio7RefreshRate.toLong())
     }
 
-    override fun onDestroy() {
-        handler.removeCallbacks(runnable)
-        gpioManager.close(gpio!!)
-        super.onDestroy()
+    private fun createValueEventListener(): ValueEventListener {
+        return object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                gpio7RefreshRate = dataSnapshot.getValue<Int>(Int::class.java)!!
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        }
     }
 
     /**

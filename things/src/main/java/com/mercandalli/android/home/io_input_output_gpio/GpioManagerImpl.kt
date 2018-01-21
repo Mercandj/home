@@ -1,21 +1,19 @@
 package com.mercandalli.android.home.io_input_output_gpio
 
+import android.util.Log
 import com.google.android.things.pio.Gpio
 import com.google.android.things.pio.PeripheralManagerService
-import com.mercandalli.android.home.log.LogManager
-import com.mercandalli.android.home.log.LogManagerImpl
 import java.io.IOException
 
 class GpioManagerImpl private constructor(
-        private val peripheralManagerService: PeripheralManagerService,
-        private val logManager: LogManager) : GpioManager {
+        private val peripheralManagerService: PeripheralManagerService) : GpioManager {
 
     override fun open(name: String): Gpio {
         var gpio: Gpio? = null
         try {
             gpio = peripheralManagerService.openGpio(name)
         } catch (e: IOException) {
-            logManager.log(TAG, "open error", e)
+            Log.e(TAG, "open error", e)
         }
 
         return gpio!!
@@ -26,7 +24,7 @@ class GpioManagerImpl private constructor(
             try {
                 gpio.close()
             } catch (e: IOException) {
-                logManager.log(TAG, "close error", e)
+                Log.e(TAG, "close error", e)
             }
 
         }
@@ -43,7 +41,7 @@ class GpioManagerImpl private constructor(
             // Toggle the value to be LOW
             gpio.value = on
         } catch (e: IOException) {
-            logManager.log(TAG, "write error", e)
+            Log.e(TAG, "write error", e)
         }
 
     }
@@ -59,7 +57,7 @@ class GpioManagerImpl private constructor(
             // Read the active high pin state
             return gpio.value
         } catch (e: IOException) {
-            logManager.log(TAG, "Error read gpio " + gpio, e)
+            Log.e(TAG, "Error read gpio " + gpio, e)
         }
 
         return false
@@ -73,11 +71,8 @@ class GpioManagerImpl private constructor(
         val instance: GpioManager = getInstanceInternal()
 
         private fun getInstanceInternal(): GpioManager {
-            val logManager = LogManagerImpl.instance
             return GpioManagerImpl(
-                    PeripheralManagerService(),
-                    logManager
-            )
+                    PeripheralManagerService())
         }
     }
 }
