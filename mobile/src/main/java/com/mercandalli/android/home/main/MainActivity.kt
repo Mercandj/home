@@ -1,4 +1,4 @@
-package com.mercandalli.android.home
+package com.mercandalli.android.home.main
 
 import android.content.ContentValues
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_main.*
+import com.mercandalli.android.home.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,15 +23,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.activity_main_toolbar))
+        title = "Android things  -  Raspberry pi 3"
 
-        // Example of a call to a native method
-        sample_text.text = stringFromJNI()
         gpio7TextView = findViewById(R.id.activity_main_gpio7_refresh_rate_textview)
         gpio7SeekBar = findViewById(R.id.activity_activity_gpio7_refresh_rate_seekbar)
 
         gpio7SeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-
+                syncGpio7Text(seekBar!!.progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun syncGpio7Text(rate: Int) {
-        gpio7TextView!!.text = "Gpio7 refresh rate: " + rate + " ms"
+        gpio7TextView!!.text = "Gpio7 rate: " + rate + " ms"
     }
 
     private fun createValueEventListener(): ValueEventListener {

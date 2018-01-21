@@ -1,11 +1,10 @@
 package com.mercandalli.android.home.main
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
-import android.text.method.ScrollingMovementMethod
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -21,15 +20,13 @@ import com.mercandalli.android.home.io_input_output_gpio.GpioManager
 import com.mercandalli.android.home.io_input_output_gpio.GpioManagerImpl
 import com.mercandalli.android.home.wifi.WifiUtils.Companion.wifiIpAddress
 
-
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
     private var gpio: Gpio? = null
     private var value: Boolean = false
     private val handler = Handler()
     private var runnableUpdateGpio7: Runnable? = null
     private var gpio7TextView: TextView? = null
-    private var logs: TextView? = null
 
     private val gpioManager = GpioManagerImpl.instance
     private var gpio7RefreshRate = 300
@@ -41,10 +38,8 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        setSupportActionBar(findViewById(R.id.activity_main_toolbar))
         title = "Android things  -  Raspberry pi 3"
-
-        Log.d("jm/debug", "Java to jni on Android things: " + stringFromJNI())
 
         findViewById<View>(R.id.activity_main_at_launcher)!!.setOnClickListener {
             launchApp(
@@ -53,8 +48,6 @@ class MainActivity : Activity() {
                     "com.android.iotlauncher.DefaultIoTLauncher")
         }
 
-        logs = findViewById(R.id.activity_main_logs)
-        logs!!.movementMethod = ScrollingMovementMethod()
         findViewById<TextView>(R.id.activity_main_ip)!!.text = "Ip: " + wifiIpAddress(this)
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
 
@@ -84,7 +77,7 @@ class MainActivity : Activity() {
 
     private fun runnableJob() {
         gpioManager.write(gpio!!, value)
-        gpio7TextView!!.text = "Gpio7 refresh rate " + gpio7RefreshRate + " ms : " + if (value) "on" else "off"
+        gpio7TextView!!.text = "Gpio7 rate " + gpio7RefreshRate + " ms : " + if (value) "on" else "off"
         value = !value
 
         handler.removeCallbacks(runnableUpdateGpio7)

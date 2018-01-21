@@ -4,17 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mercandalli.android.home.MainActivity">
+    tools:context="com.mercandalli.android.home.main.MainActivity">
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,13 +25,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:text="Gpio7 refresh rate: 300 ms" />
+            android:text="Gpio7 rate: 300 ms" />
 
         <SeekBar
             android:id="@+id/activity_activity_gpio7_refresh_rate_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="3000"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:max="1000"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
             android:progress="300" />
 
     </LinearLayout>
