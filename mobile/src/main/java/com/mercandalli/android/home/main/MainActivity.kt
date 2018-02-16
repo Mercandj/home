@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.activity_main_toolbar))
-        title = "Android things  -  Raspberry pi 3"
 
         gpio7TextView = findViewById(R.id.activity_main_gpio7_refresh_rate_textview)
         gpio7SeekBar = findViewById(R.id.activity_activity_gpio7_refresh_rate_seekbar)

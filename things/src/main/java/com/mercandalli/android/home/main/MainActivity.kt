@@ -38,8 +38,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.activity_main_toolbar))
-        title = "Android things  -  Raspberry pi 3"
 
         findViewById<View>(R.id.activity_main_at_launcher)!!.setOnClickListener {
             launchApp(
