@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,10 +15,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/default_space"
-            android:text="Android things  -  Raspberry pi 3"
+            android:layout_marginStart="@dimen/default_space_1_5"
+            android:text="Home"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_s" />
+            android:textSize="@dimen/text_size_xl" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,17 +35,19 @@
                 android:layout_marginStart="@dimen/default_space_half"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_xs" />
+                android:textSize="@dimen/text_size_m"
+                tools:text="5°C\n1000 hPa" />
 
             <com.mercandalli.core_ui.clock.ClockTextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/default_space_half"
+                android:layout_marginEnd="@dimen/default_space_1_5"
                 android:layout_marginStart="@dimen/default_space"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_s" />
+                android:textSize="@dimen/text_size_l"
+                tools:text="23 : 45 : 31" />
 
         </LinearLayout>
 
@@ -53,28 +55,46 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:background="#EEEEEE"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/default_space_quart">
 
-        <TextView
-            android:id="@+id/activity_main_gpio7_refresh_rate_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:text="Gpio7 rate: 300 ms" />
-
-        <SeekBar
-            android:id="@+id/activity_activity_gpio7_refresh_rate_seekbar"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:max="1000"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:progress="300" />
+            android:layout_margin="@dimen/default_space">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/default_space">
+
+                <TextView
+                    android:id="@+id/activity_main_gpio7_refresh_rate_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:text="Gpio7 rate: 300 ms" />
+
+                <SeekBar
+                    android:id="@+id/activity_activity_gpio7_refresh_rate_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:max="1000"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:progress="300" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
@@ -86,4 +106,4 @@
         android:background="@drawable/shadow_bottom"
         android:clickable="false" />
 
-</FrameLayout>
+</merge>
