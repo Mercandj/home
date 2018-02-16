@@ -1,20 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <FrameLayout
         android:id="@+id/activity_main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:background="@color/colorPrimary"
-        app:titleTextColor="@android:color/white" />
+        android:background="@color/colorPrimary">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/default_space"
+            android:text="Android things  -  Raspberry pi 3"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_s" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.mercandalli.core_ui.weather.WeatherTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/default_space_half"
+                android:layout_marginStart="@dimen/default_space_half"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_xs" />
+
+            <com.mercandalli.core_ui.clock.ClockTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/default_space_half"
+                android:layout_marginStart="@dimen/default_space"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_s" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_height"
+        android:background="#222222"
         android:orientation="vertical">
 
         <TextView
@@ -23,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:text="Ip: "
+            android:textColor="#aaaaaa"
             android:textSize="10dp" />
 
         <TextView
@@ -31,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:text="Gpio7 rate 300 ms : on"
+            android:textColor="#aaaaaa"
             android:textSize="10dp" />
 
     </LinearLayout>

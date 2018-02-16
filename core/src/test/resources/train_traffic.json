@@ -1,0 +1,13 @@
+{
+  "result": {
+    "line": "D",
+    "slug": "normal",
+    "title": "Trafic normal",
+    "message": "Trafic normal sur l'ensemble de la ligne."
+  },
+  "_metadata": {
+    "call": "GET /traffic/rers/d",
+    "date": "2018-02-16T18:57:38+01:00",
+    "version": 3
+  }
+}
