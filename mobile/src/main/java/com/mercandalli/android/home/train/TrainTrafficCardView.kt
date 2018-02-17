@@ -16,6 +16,7 @@ class TrainTrafficCardView @JvmOverloads constructor(
 
     private val trainManager: TrainManager
     private val title: TextView
+    private val subtitle: TextView
     private val message: TextView
     @TrainManager.Companion.TrainTrafficType
     private var trainTrafficType: Long = 0
@@ -24,6 +25,7 @@ class TrainTrafficCardView @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.view_train_traffic, this)
         title = findViewById(R.id.view_train_traffic_title)
+        subtitle = findViewById(R.id.view_train_traffic_subtitle)
         message = findViewById(R.id.view_train_traffic_message)
         trainManager = CoreGraph.get().provideTrainManager()
         trainTrafficListener = createTrainTrafficListener()
@@ -53,9 +55,12 @@ class TrainTrafficCardView @JvmOverloads constructor(
     private fun sync() {
         val trainTraffic = trainManager.getTrainTraffic(trainTrafficType)
         if (trainTraffic != null) {
+            subtitle.visibility = View.VISIBLE
             message.visibility = View.VISIBLE
+            subtitle.text = trainTraffic.title
             message.text = trainTraffic.message
         } else {
+            subtitle.visibility = View.GONE
             message.visibility = View.GONE
         }
     }

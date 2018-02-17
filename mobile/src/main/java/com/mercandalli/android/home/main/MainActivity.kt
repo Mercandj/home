@@ -21,12 +21,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.activity_main_recycler_view)
+        recyclerView.layoutManager = createLayoutManager()
 
         adapter = MainAdapter(createOnTrainTrafficClickListener())
         swipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
         }
-        recyclerView.layoutManager = createLayoutManager()
         recyclerView.adapter = adapter
 
         val traffics = ArrayList<TrainTrafficViewModel>()
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun createLayoutManager(): RecyclerView.LayoutManager? {
         return StaggeredGridLayoutManager(
-                resources.getInteger(R.integer.grid_nb_column),
+                resources.getInteger(R.integer.activity_main_nb_column),
                 StaggeredGridLayoutManager.VERTICAL)
     }
 

@@ -1,6 +1,7 @@
 package com.mercandalli.android.home.main
 
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -22,8 +23,8 @@ internal class MainAdapter constructor(
 
     fun setTrainTrafficViewModel(trainTrafficViewModel: List<TrainTrafficViewModel>) {
         val list = ArrayList<Any>()
-        list.add(GpioViewModel("Android things"))
         list.addAll(trainTrafficViewModel)
+        list.add(GpioViewModel("Android things"))
         setItems(list)
         notifyDataSetChanged()
     }
@@ -38,20 +39,21 @@ internal class MainAdapter constructor(
 
         override fun onCreateViewHolder(viewGroup: ViewGroup): GpioViewHolder {
             val gitLabProjectCardView = GpioCardView(viewGroup.context)
-            val layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT)
+            val layoutParams = StaggeredGridLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
             layoutParams.topMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.isFullSpan = true
             gitLabProjectCardView.layoutParams = layoutParams
             return GpioViewHolder(gitLabProjectCardView)
         }
 
         override fun onBindViewHolder(
-                model: Any, gitLabProjectViewHolder: GpioViewHolder, list: List<Any>) {
-            gitLabProjectViewHolder.bind(model as GpioViewModel)
+                model: Any, viewHolder: GpioViewHolder, list: List<Any>) {
+            viewHolder.bind(model as GpioViewModel)
         }
     }
 
@@ -77,21 +79,22 @@ internal class MainAdapter constructor(
 
         override fun onCreateViewHolder(viewGroup: ViewGroup): TrainTrafficViewHolder {
             val gitLabProjectCardView = TrainTrafficCardView(viewGroup.context)
-            val layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT)
+            val layoutParams = StaggeredGridLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
             layoutParams.topMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             gitLabProjectCardView.layoutParams = layoutParams
+            layoutParams.isFullSpan = false
             gitLabProjectCardView.setOnTrainTrafficClickListener(onPlaylistClickListener)
             return TrainTrafficViewHolder(gitLabProjectCardView)
         }
 
         override fun onBindViewHolder(
-                model: Any, gitLabProjectViewHolder: TrainTrafficViewHolder, list: List<Any>) {
-            gitLabProjectViewHolder.bind(model as TrainTrafficViewModel)
+                model: Any, viewHolder: TrainTrafficViewHolder, list: List<Any>) {
+            viewHolder.bind(model as TrainTrafficViewModel)
         }
     }
 
