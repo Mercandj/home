@@ -7,7 +7,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 import com.mercandalli.android.home.R
 import com.mercandalli.android.home.train.TrainTrafficCardView
-import com.mercandalli.core.train.TrainTraffic
+import com.mercandalli.android.home.train.TrainTrafficViewModel
 
 internal class MainAdapter constructor(
         onTrainTrafficClickListener: TrainTrafficCardView.OnTrainTrafficClickListener)
@@ -18,8 +18,8 @@ internal class MainAdapter constructor(
                 as AdapterDelegate<List<Any>>)
     }
 
-    fun setTrainTraffic(trainTraffic: List<TrainTraffic>) {
-        val list = ArrayList<Any>(trainTraffic)
+    fun setTrainTrafficViewModel(trainTrafficViewModel: List<TrainTrafficViewModel>) {
+        val list = ArrayList<Any>(trainTrafficViewModel)
         setItems(list)
         notifyDataSetChanged()
     }
@@ -30,7 +30,7 @@ internal class MainAdapter constructor(
             AbsListItemAdapterDelegate<Any, Any, TrainTrafficViewHolder>() {
 
         override fun isForViewType(o: Any, list: List<Any>, i: Int): Boolean {
-            return o is TrainTraffic
+            return o is TrainTrafficViewModel
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup): TrainTrafficViewHolder {
@@ -49,15 +49,15 @@ internal class MainAdapter constructor(
 
         override fun onBindViewHolder(
                 model: Any, gitLabProjectViewHolder: TrainTrafficViewHolder, list: List<Any>) {
-            gitLabProjectViewHolder.bind(model as TrainTraffic)
+            gitLabProjectViewHolder.bind(model as TrainTrafficViewModel)
         }
     }
 
     private class TrainTrafficViewHolder(
             private val view: TrainTrafficCardView) :
             RecyclerView.ViewHolder(view) {
-        fun bind(trainTraffic: TrainTraffic) {
-            view.setTrainTraffic(trainTraffic)
+        fun bind(trainTrafficViewModel: TrainTrafficViewModel) {
+            view.setTrainTrafficViewModel(trainTrafficViewModel)
         }
     }
     //endregion TrainTraffic
