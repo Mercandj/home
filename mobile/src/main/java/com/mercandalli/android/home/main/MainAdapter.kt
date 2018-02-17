@@ -8,26 +8,75 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 import com.mercandalli.android.home.R
 import com.mercandalli.android.home.gpio.GpioCardView
+import com.mercandalli.android.home.train.TrainSchedulesCardView
 import com.mercandalli.android.home.train.TrainTrafficCardView
-import com.mercandalli.android.home.train.TrainTrafficViewModel
+import com.mercandalli.core.train.TrainManager
+import com.mercandalli.core.train.TrainTraffic
 
-internal class MainAdapter constructor(
+class MainAdapter constructor(
         onTrainTrafficClickListener: TrainTrafficCardView.OnTrainTrafficClickListener)
     : ListDelegationAdapter<List<Any>>() {
 
     init {
+        delegatesManager.addDelegate(SectionTitleAdapterDelegate())
         delegatesManager.addDelegate(GpioAdapterDelegate())
         delegatesManager.addDelegate(TrainTrafficAdapterDelegate(onTrainTrafficClickListener)
                 as AdapterDelegate<List<Any>>)
+        delegatesManager.addDelegate(TrainSchedulesAdapterDelegate())
     }
 
-    fun setTrainTrafficViewModel(trainTrafficViewModel: List<TrainTrafficViewModel>) {
+    fun setViewModel(
+            trainTrafficViewModels: List<TrainTrafficViewModel>,
+            trainSchedulesViewModels: List<TrainSchedulesViewModel>) {
         val list = ArrayList<Any>()
-        list.addAll(trainTrafficViewModel)
+        list.add(SectionTitleViewModel("Traffic"))
+        list.addAll(trainTrafficViewModels)
+        list.add(SectionTitleViewModel("Schedules"))
+        list.addAll(trainSchedulesViewModels)
+        list.add(SectionTitleViewModel("Gpio"))
         list.add(GpioViewModel("Android things"))
         setItems(list)
         notifyDataSetChanged()
     }
+
+    //region SectionTitle
+    private class SectionTitleAdapterDelegate :
+            AbsListItemAdapterDelegate<Any, Any, SectionTitleViewHolder>() {
+
+        override fun isForViewType(o: Any, list: List<Any>, i: Int): Boolean {
+            return o is SectionTitleViewModel
+        }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup): SectionTitleViewHolder {
+            val view = SectionTitleCardView(viewGroup.context)
+            val layoutParams = StaggeredGridLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.topMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.isFullSpan = true
+            view.layoutParams = layoutParams
+            return SectionTitleViewHolder(view)
+        }
+
+        override fun onBindViewHolder(
+                model: Any, viewHolder: SectionTitleViewHolder, list: List<Any>) {
+            viewHolder.bind(model as SectionTitleViewModel)
+        }
+    }
+
+    private class SectionTitleViewHolder(
+            private val view: SectionTitleCardView) :
+            RecyclerView.ViewHolder(view) {
+        fun bind(sectionTitleViewModel: SectionTitleViewModel) {
+            view.text = sectionTitleViewModel.title
+        }
+    }
+
+    private data class SectionTitleViewModel(val title: String)
+    //endregion SectionTitle
 
     //region Gpio
     private class GpioAdapterDelegate :
@@ -38,7 +87,7 @@ internal class MainAdapter constructor(
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup): GpioViewHolder {
-            val gitLabProjectCardView = GpioCardView(viewGroup.context)
+            val view = GpioCardView(viewGroup.context)
             val layoutParams = StaggeredGridLayoutManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -47,8 +96,8 @@ internal class MainAdapter constructor(
             layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.isFullSpan = true
-            gitLabProjectCardView.layoutParams = layoutParams
-            return GpioViewHolder(gitLabProjectCardView)
+            view.layoutParams = layoutParams
+            return GpioViewHolder(view)
         }
 
         override fun onBindViewHolder(
@@ -78,7 +127,7 @@ internal class MainAdapter constructor(
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup): TrainTrafficViewHolder {
-            val gitLabProjectCardView = TrainTrafficCardView(viewGroup.context)
+            val view = TrainTrafficCardView(viewGroup.context)
             val layoutParams = StaggeredGridLayoutManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -86,10 +135,10 @@ internal class MainAdapter constructor(
             layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
             layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
-            gitLabProjectCardView.layoutParams = layoutParams
+            view.layoutParams = layoutParams
             layoutParams.isFullSpan = false
-            gitLabProjectCardView.setOnTrainTrafficClickListener(onPlaylistClickListener)
-            return TrainTrafficViewHolder(gitLabProjectCardView)
+            view.setOnTrainTrafficClickListener(onPlaylistClickListener)
+            return TrainTrafficViewHolder(view)
         }
 
         override fun onBindViewHolder(
@@ -105,5 +154,52 @@ internal class MainAdapter constructor(
             view.setTrainTrafficViewModel(trainTrafficViewModel)
         }
     }
+
+    data class TrainTrafficViewModel(
+            val title: String,
+            @TrainManager.Companion.TrainTrafficType val trainTrafficType: Long,
+            val trainTraffic: TrainTraffic?)
     //endregion TrainTraffic
+
+    //region TrainSchedules
+    private class TrainSchedulesAdapterDelegate : AbsListItemAdapterDelegate<Any, Any, TrainSchedulesViewHolder>() {
+
+        override fun isForViewType(o: Any, list: List<Any>, i: Int): Boolean {
+            return o is TrainSchedulesViewModel
+        }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup): TrainSchedulesViewHolder {
+            val view = TrainSchedulesCardView(viewGroup.context)
+            val layoutParams = StaggeredGridLayoutManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.topMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(R.dimen.default_space_half)
+            view.layoutParams = layoutParams
+            layoutParams.isFullSpan = false
+            return TrainSchedulesViewHolder(view)
+        }
+
+        override fun onBindViewHolder(
+                model: Any, viewHolder: TrainSchedulesViewHolder, list: List<Any>) {
+            viewHolder.bind(model as TrainSchedulesViewModel)
+        }
+    }
+
+    private class TrainSchedulesViewHolder(
+            private val view: TrainSchedulesCardView) :
+            RecyclerView.ViewHolder(view) {
+        fun bind(trainTrafficViewModel: TrainSchedulesViewModel) {
+            view.setTrainSchedulesViewModel(trainTrafficViewModel)
+        }
+    }
+
+    data class TrainSchedulesViewModel(
+            val title: String,
+            @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Long,
+            val trainTraffic: TrainTraffic?)
+
+    //endregion TrainSchedules
 }

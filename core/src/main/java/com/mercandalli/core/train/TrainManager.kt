@@ -18,6 +18,15 @@ interface TrainManager {
         const val TRAFFIC_D = 1L
         const val TRAFFIC_9 = 2L
         const val TRAFFIC_14 = 3L
+
+        @IntDef(
+                SCHEDULES_GARE_DE_LYON_A,
+                SCHEDULES_BOISSY_A)
+        @Retention(AnnotationRetention.SOURCE)
+        annotation class TrainSchedulesType
+
+        const val SCHEDULES_GARE_DE_LYON_A = 0L
+        const val SCHEDULES_BOISSY_A = 1L
     }
 
     fun sync()
@@ -28,8 +37,18 @@ interface TrainManager {
 
     fun unregisterTrainTrafficListener(listener: TrainManager.TrainTrafficListener)
 
+    fun getTrainSchedules(@TrainSchedulesType trainSchedulesType: Long): TrainSchedules?
+
+    fun registerTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener)
+
+    fun unregisterTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener)
+
     interface TrainTrafficListener {
         fun onTrainTrafficChanged(@TrainTrafficType trainTrafficType: Long)
+    }
+
+    interface TrainSchedulesListener {
+        fun onTrainSchedulesChanged(@TrainSchedulesType trainSchedulesType: Long)
     }
 
 

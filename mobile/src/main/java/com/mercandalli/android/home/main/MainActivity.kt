@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import com.mercandalli.android.home.R
 import com.mercandalli.android.home.train.TrainTrafficCardView
-import com.mercandalli.android.home.train.TrainTrafficViewModel
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.train.TrainManager
 
@@ -26,15 +25,20 @@ class MainActivity : AppCompatActivity() {
         adapter = MainAdapter(createOnTrainTrafficClickListener())
         swipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
+            adapter.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
         }
         recyclerView.adapter = adapter
 
-        val traffics = ArrayList<TrainTrafficViewModel>()
-        traffics.add(TrainTrafficViewModel("Rer A", TrainManager.TRAFFIC_A, null))
-        traffics.add(TrainTrafficViewModel("Rer D", TrainManager.TRAFFIC_D, null))
-        traffics.add(TrainTrafficViewModel("Metro 9", TrainManager.TRAFFIC_9, null))
-        traffics.add(TrainTrafficViewModel("Metro 14", TrainManager.TRAFFIC_14, null))
-        adapter.setTrainTrafficViewModel(traffics)
+        val traffics = ArrayList<MainAdapter.TrainTrafficViewModel>()
+        traffics.add(MainAdapter.TrainTrafficViewModel("Rer D", TrainManager.TRAFFIC_D, null))
+        traffics.add(MainAdapter.TrainTrafficViewModel("Metro 9", TrainManager.TRAFFIC_9, null))
+        traffics.add(MainAdapter.TrainTrafficViewModel("Metro 14", TrainManager.TRAFFIC_14, null))
+        traffics.add(MainAdapter.TrainTrafficViewModel("Rer A", TrainManager.TRAFFIC_A, null))
+        val schedules = ArrayList<MainAdapter.TrainSchedulesViewModel>()
+        schedules.add(MainAdapter.TrainSchedulesViewModel("Gare de lyon A", TrainManager.SCHEDULES_GARE_DE_LYON_A, null))
+        schedules.add(MainAdapter.TrainSchedulesViewModel("Boissy A", TrainManager.SCHEDULES_BOISSY_A, null))
+        adapter.setViewModel(traffics, schedules)
 
         if (savedInstanceState == null) {
             CoreGraph.get().provideTrainManager().sync()

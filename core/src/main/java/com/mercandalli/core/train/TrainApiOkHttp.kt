@@ -36,4 +36,25 @@ class TrainApiOkHttp(
         return null
     }
 
+    override fun getTrainSchedules(trainSchedulesType: Long): TrainSchedules? {
+        val url = when (trainSchedulesType) {
+            TrainManager.SCHEDULES_GARE_DE_LYON_A -> TrainConst.SCHEDULES_GARE_DE_LYON_A
+            TrainManager.SCHEDULES_BOISSY_A -> TrainConst.SCHEDULES_BOISSY_A
+            else -> ""
+        }
+        val request = Request.Builder()
+                .url(url)
+                .build()
+        var response: Response? = null
+        var body: ResponseBody? = null
+        try {
+            response = okHttpClient.newCall(request).execute()
+            body = response!!.body()
+            return TrainSchedules.fromJson(trainSchedulesType, JSONObject(body!!.string()))
+        } catch (ignored: IOException) {
+        } finally {
+            Closer.closeSilently(body, response)
+        }
+        return null
+    }
 }

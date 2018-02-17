@@ -8,14 +8,18 @@ class TrainManagerImpl(
         private val mainThreadPost: MainThreadPost) : TrainManager {
 
     private val trainTraffics = HashMap<Long, TrainTraffic?>()
-    private val listeners = ArrayList<TrainManager.TrainTrafficListener>()
+    private val trainTrafficListeners = ArrayList<TrainManager.TrainTrafficListener>()
+    private val trainSchedules = HashMap<Long, TrainSchedules?>()
+    private val trainSchedulesListeners = ArrayList<TrainManager.TrainSchedulesListener>()
 
     override fun sync() {
         async {
-            notifyListener(TrainManager.TRAFFIC_A, trainApi.getTrainTraffic(TrainManager.TRAFFIC_A))
-            notifyListener(TrainManager.TRAFFIC_D, trainApi.getTrainTraffic(TrainManager.TRAFFIC_D))
-            notifyListener(TrainManager.TRAFFIC_9, trainApi.getTrainTraffic(TrainManager.TRAFFIC_9))
-            notifyListener(TrainManager.TRAFFIC_14, trainApi.getTrainTraffic(TrainManager.TRAFFIC_14))
+            notifyTrainTrafficListener(TrainManager.TRAFFIC_A, trainApi.getTrainTraffic(TrainManager.TRAFFIC_A))
+            notifyTrainTrafficListener(TrainManager.TRAFFIC_D, trainApi.getTrainTraffic(TrainManager.TRAFFIC_D))
+            notifyTrainTrafficListener(TrainManager.TRAFFIC_9, trainApi.getTrainTraffic(TrainManager.TRAFFIC_9))
+            notifyTrainTrafficListener(TrainManager.TRAFFIC_14, trainApi.getTrainTraffic(TrainManager.TRAFFIC_14))
+            notifyTrainSchedulesListener(TrainManager.SCHEDULES_GARE_DE_LYON_A, trainApi.getTrainSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_A))
+            notifyTrainSchedulesListener(TrainManager.SCHEDULES_BOISSY_A, trainApi.getTrainSchedules(TrainManager.SCHEDULES_BOISSY_A))
         }
     }
 
@@ -24,26 +28,54 @@ class TrainManagerImpl(
     }
 
     override fun registerTrainTrafficListener(listener: TrainManager.TrainTrafficListener) {
-        if (listeners.contains(listener)) {
+        if (trainTrafficListeners.contains(listener)) {
             return
         }
-        listeners.add(listener)
+        trainTrafficListeners.add(listener)
     }
 
     override fun unregisterTrainTrafficListener(listener: TrainManager.TrainTrafficListener) {
-        listeners.remove(listener)
+        trainTrafficListeners.remove(listener)
     }
 
-    private fun notifyListener(
+    override fun getTrainSchedules(trainSchedulesType: Long): TrainSchedules? {
+        return trainSchedules[trainSchedulesType]
+    }
+
+    override fun registerTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener) {
+        if (trainSchedulesListeners.contains(listener)) {
+            return
+        }
+        trainSchedulesListeners.add(listener)
+    }
+
+    override fun unregisterTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener) {
+        trainSchedulesListeners.remove(listener)
+    }
+
+    private fun notifyTrainTrafficListener(
             @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
             trainTraffic: TrainTraffic?) {
         if (!mainThreadPost.isOnMainThread) {
-            mainThreadPost.post(Runnable { notifyListener(trainTrafficType, trainTraffic) })
+            mainThreadPost.post(Runnable { notifyTrainTrafficListener(trainTrafficType, trainTraffic) })
             return
         }
         trainTraffics[trainTrafficType] = trainTraffic
-        for (listener in listeners) {
+        for (listener in trainTrafficListeners) {
             listener.onTrainTrafficChanged(trainTrafficType)
+        }
+    }
+
+    private fun notifyTrainSchedulesListener(
+            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Long,
+            trainSchedules: TrainSchedules?) {
+        if (!mainThreadPost.isOnMainThread) {
+            mainThreadPost.post(Runnable { notifyTrainSchedulesListener(trainSchedulesType, trainSchedules) })
+            return
+        }
+        this.trainSchedules[trainSchedulesType] = trainSchedules
+        for (listener in trainSchedulesListeners) {
+            listener.onTrainSchedulesChanged(trainSchedulesType)
         }
     }
 

@@ -1,0 +1,41 @@
+{
+  "result": {
+    "schedules": [
+      {
+        "code": "ZEUS",
+        "message": "15:01 Départ Voie 1",
+        "destination": "Saint-Germain-en-Laye"
+      },
+      {
+        "code": "ZEUS",
+        "message": "15:11 Départ Voie 2",
+        "destination": "Saint-Germain-en-Laye"
+      },
+      {
+        "code": "ZEUS",
+        "message": "15:21 Départ Voie 4",
+        "destination": "Saint-Germain-en-Laye"
+      },
+      {
+        "code": "ZEUS",
+        "message": "15:31 Départ Voie 2",
+        "destination": "Saint-Germain-en-Laye"
+      },
+      {
+        "code": "ZEUS",
+        "message": "15:41 Départ Voie 4",
+        "destination": "Saint-Germain-en-Laye"
+      },
+      {
+        "code": "ZEUS",
+        "message": "15:51 Départ Voie 2",
+        "destination": "Saint-Germain-en-Laye"
+      }
+    ]
+  },
+  "_metadata": {
+    "call": "GET /schedules/rers/a/boissy+saint+leger/A",
+    "date": "2018-02-17T14:59:22+01:00",
+    "version": 3
+  }
+}

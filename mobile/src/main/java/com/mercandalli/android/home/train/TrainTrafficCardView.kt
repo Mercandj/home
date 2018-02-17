@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.mercandalli.android.home.R
+import com.mercandalli.android.home.main.MainAdapter
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.train.TrainManager
 
@@ -46,7 +47,7 @@ class TrainTrafficCardView @JvmOverloads constructor(
 
     }
 
-    fun setTrainTrafficViewModel(trainTrafficViewModel: TrainTrafficViewModel) {
+    fun setTrainTrafficViewModel(trainTrafficViewModel: MainAdapter.TrainTrafficViewModel) {
         title.text = trainTrafficViewModel.title
         trainTrafficType = trainTrafficViewModel.trainTrafficType
         sync()
