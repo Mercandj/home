@@ -1,5 +1,6 @@
 package com.mercandalli.core.train
 
+import android.util.Log
 import com.mercandalli.core.main.Closer
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -40,18 +41,33 @@ class TrainApiOkHttp(
         val url = when (trainSchedulesType) {
             TrainManager.SCHEDULES_GARE_DE_LYON_A -> TrainConst.SCHEDULES_GARE_DE_LYON_A
             TrainManager.SCHEDULES_BOISSY_A -> TrainConst.SCHEDULES_BOISSY_A
+            TrainManager.SCHEDULES_YERRES_D -> TrainConst.SNCF_SCHEDULES_YERRES
+            TrainManager.SCHEDULES_GARE_DE_LYON_D -> TrainConst.SNCF_SCHEDULES_GDL
             else -> ""
         }
-        val request = Request.Builder()
-                .url(url)
-                .build()
+        val request = if (trainSchedulesType == TrainManager.SCHEDULES_YERRES_D ||
+                trainSchedulesType == TrainManager.SCHEDULES_GARE_DE_LYON_D) {
+            Request.Builder()
+                    .header("Authorization", "basic dG5odG4xMDQ6ck1IbTAzNmQ=")
+                    .url(url)
+                    .build()
+        } else {
+            Request.Builder()
+                    .url(url)
+                    .build()
+        }
         var response: Response? = null
         var body: ResponseBody? = null
         try {
             response = okHttpClient.newCall(request).execute()
             body = response!!.body()
+            if (trainSchedulesType == TrainManager.SCHEDULES_YERRES_D ||
+                    trainSchedulesType == TrainManager.SCHEDULES_GARE_DE_LYON_D) {
+                return TrainSchedules.fromXml(trainSchedulesType, body!!.string())
+            }
             return TrainSchedules.fromJson(trainSchedulesType, JSONObject(body!!.string()))
-        } catch (ignored: IOException) {
+        } catch (e: IOException) {
+            Log.e("jm/debug", "Error", e)
         } finally {
             Closer.closeSilently(body, response)
         }

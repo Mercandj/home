@@ -1,7 +1,6 @@
 package com.mercandalli.core.train
 
 class TrainConst {
-
     /**
      * https://api-ratp.pierre-grimaud.fr/v3/documentation#get--schedules-{type}-{code}-{station}-{way}
      */
@@ -24,6 +23,12 @@ class TrainConst {
          * https://blogs.infinitesquare.com/posts/iot/afficher-les-prochains-depart-de-ma-gare-rersncf-sur-mon-microsoft-band
          */
         const val YERRES_UIC = "87682112"
+        const val MELUN_UIC = "87682005"
+        const val GDL_UIC_1 = "87686006"
+        const val GDL_UIC_2 = "87758581"
+        const val SNCF_SCHEDULES_YERRES = "http://api.transilien.com/gare/$YERRES_UIC/depart/"
+        const val SNCF_SCHEDULES_GDL = "http://api.transilien.com/gare/$GDL_UIC_1/depart/"
+        const val SNCF_USER = "tnhtn104"
+        const val SNCF_PASS = "rMHm036d"
     }
-
 }

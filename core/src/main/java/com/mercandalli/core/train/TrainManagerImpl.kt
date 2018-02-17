@@ -20,6 +20,8 @@ class TrainManagerImpl(
             notifyTrainTrafficListener(TrainManager.TRAFFIC_14, trainApi.getTrainTraffic(TrainManager.TRAFFIC_14))
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_GARE_DE_LYON_A, trainApi.getTrainSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_A))
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_BOISSY_A, trainApi.getTrainSchedules(TrainManager.SCHEDULES_BOISSY_A))
+            notifyTrainSchedulesListener(TrainManager.SCHEDULES_YERRES_D, trainApi.getTrainSchedules(TrainManager.SCHEDULES_YERRES_D))
+            notifyTrainSchedulesListener(TrainManager.SCHEDULES_GARE_DE_LYON_D, trainApi.getTrainSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_D))
         }
     }
 

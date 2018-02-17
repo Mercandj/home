@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         traffics.add(MainAdapter.TrainTrafficViewModel("Metro 14", TrainManager.TRAFFIC_14, null))
         traffics.add(MainAdapter.TrainTrafficViewModel("Rer A", TrainManager.TRAFFIC_A, null))
         val schedules = ArrayList<MainAdapter.TrainSchedulesViewModel>()
+        schedules.add(MainAdapter.TrainSchedulesViewModel("Yerres D", TrainManager.SCHEDULES_YERRES_D, null))
+        schedules.add(MainAdapter.TrainSchedulesViewModel("Gare de lyon D", TrainManager.SCHEDULES_GARE_DE_LYON_D, null))
         schedules.add(MainAdapter.TrainSchedulesViewModel("Gare de lyon A", TrainManager.SCHEDULES_GARE_DE_LYON_A, null))
         schedules.add(MainAdapter.TrainSchedulesViewModel("Boissy A", TrainManager.SCHEDULES_BOISSY_A, null))
         adapter.setViewModel(traffics, schedules)

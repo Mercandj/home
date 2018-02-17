@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<passages gare="87682112">
+<train><date mode="R">17/02/2018 21:13</date>
+<num>127536</num>
+<miss>FACA</miss>
+<term>87276246</term>
+</train>
+<train><date mode="R">17/02/2018 21:33</date>
+<num>153521</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">17/02/2018 21:43</date>
+<num>150104</num>
+<miss>DACA</miss>
+<term>87686006</term>
+</train>
+<train><date mode="R">17/02/2018 21:59</date>
+<num>153523</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">17/02/2018 22:13</date>
+<num>150106</num>
+<miss>DACA</miss>
+<term>87686006</term>
+</train>
+<train><date mode="R">17/02/2018 22:29</date>
+<num>153525</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">17/02/2018 22:43</date>
+<num>150108</num>
+<miss>DACA</miss>
+<term>87686006</term>
+</train>
+<train><date mode="R">17/02/2018 22:56</date>
+<num>153107</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">17/02/2018 23:13</date>
+<num>150110</num>
+<miss>DACA</miss>
+<term>87686006</term>
+</train>
+<train><date mode="R">17/02/2018 23:26</date>
+<num>153109</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">17/02/2018 23:43</date>
+<num>150112</num>
+<miss>DACA</miss>
+<term>87686006</term>
+</train>
+<train><date mode="R">17/02/2018 23:56</date>
+<num>153111</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">18/02/2018 00:13</date>
+<num>150114</num>
+<miss>DACA</miss>
+<term>87758581</term>
+</train>
+<train><date mode="R">18/02/2018 00:26</date>
+<num>153113</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+<train><date mode="R">18/02/2018 00:56</date>
+<num>153115</num>
+<miss>ZACO</miss>
+<term>87682005</term>
+</train>
+</passages>

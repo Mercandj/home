@@ -21,12 +21,16 @@ interface TrainManager {
 
         @IntDef(
                 SCHEDULES_GARE_DE_LYON_A,
-                SCHEDULES_BOISSY_A)
+                SCHEDULES_BOISSY_A,
+                SCHEDULES_YERRES_D,
+                SCHEDULES_GARE_DE_LYON_D)
         @Retention(AnnotationRetention.SOURCE)
         annotation class TrainSchedulesType
 
         const val SCHEDULES_GARE_DE_LYON_A = 0L
         const val SCHEDULES_BOISSY_A = 1L
+        const val SCHEDULES_YERRES_D = 2L
+        const val SCHEDULES_GARE_DE_LYON_D = 3L
     }
 
     fun sync()
