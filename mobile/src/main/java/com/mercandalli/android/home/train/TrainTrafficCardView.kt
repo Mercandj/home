@@ -63,7 +63,7 @@ class TrainTrafficCardView @JvmOverloads constructor(
     private fun createTrainTrafficListener(): TrainManager.TrainTrafficListener {
         return object : TrainManager.TrainTrafficListener {
             override fun onTrainTrafficChanged(trainTrafficType: Long) {
-
+                sync()
             }
         }
     }

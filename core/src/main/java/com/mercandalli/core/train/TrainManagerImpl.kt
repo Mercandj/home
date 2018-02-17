@@ -12,8 +12,10 @@ class TrainManagerImpl(
 
     override fun sync() {
         async {
-            val trainTraffic = trainApi.getTrainTraffic(TrainManager.TRAFFIC_A)
-            notifyListener(TrainManager.TRAFFIC_A, trainTraffic)
+            notifyListener(TrainManager.TRAFFIC_A, trainApi.getTrainTraffic(TrainManager.TRAFFIC_A))
+            notifyListener(TrainManager.TRAFFIC_D, trainApi.getTrainTraffic(TrainManager.TRAFFIC_D))
+            notifyListener(TrainManager.TRAFFIC_9, trainApi.getTrainTraffic(TrainManager.TRAFFIC_9))
+            notifyListener(TrainManager.TRAFFIC_14, trainApi.getTrainTraffic(TrainManager.TRAFFIC_14))
         }
     }
 
