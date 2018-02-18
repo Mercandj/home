@@ -28,7 +28,15 @@ class TrainConst {
         const val GDL_UIC_2 = "87758581"
         const val SNCF_SCHEDULES_YERRES = "http://api.transilien.com/gare/$YERRES_UIC/depart/"
         const val SNCF_SCHEDULES_GDL = "http://api.transilien.com/gare/$GDL_UIC_1/depart/"
-        const val SNCF_USER = "tnhtn104"
-        const val SNCF_PASS = "rMHm036d"
+
+        fun trainUicToName(uic: String): String {
+            return when (uic) {
+                TrainConst.MELUN_UIC -> "Melun"
+                TrainConst.YERRES_UIC -> "Yerres"
+                TrainConst.GDL_UIC_1 -> "Gare de lyon 1"
+                TrainConst.GDL_UIC_2 -> "Gare de lyon 2"
+                else -> "Term: " + uic
+            }
+        }
     }
 }

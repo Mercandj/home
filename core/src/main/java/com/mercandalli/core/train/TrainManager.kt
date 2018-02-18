@@ -35,6 +35,10 @@ interface TrainManager {
 
     fun sync()
 
+    fun registerTrainSyncListener(listener: TrainManager.TrainSyncListener)
+
+    fun unregisterTrainSyncListener(listener: TrainManager.TrainSyncListener)
+
     fun getTrainTraffic(@TrainTrafficType trainTrafficType: Long): TrainTraffic?
 
     fun registerTrainTrafficListener(listener: TrainManager.TrainTrafficListener)
@@ -46,6 +50,10 @@ interface TrainManager {
     fun registerTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener)
 
     fun unregisterTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener)
+
+    interface TrainSyncListener {
+        fun onTrainSyncFinished()
+    }
 
     interface TrainTrafficListener {
         fun onTrainTrafficChanged(@TrainTrafficType trainTrafficType: Long)

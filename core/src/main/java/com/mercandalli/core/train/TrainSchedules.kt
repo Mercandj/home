@@ -1,5 +1,6 @@
 package com.mercandalli.core.train
 
+import com.mercandalli.core.train.TrainConst.Companion.trainUicToName
 import org.json.JSONObject
 import org.json.XML
 
@@ -38,13 +39,7 @@ data class TrainSchedules(
                 val term = trainJsonObject.getString("term")
                 val num = trainJsonObject.getString("num")
                 schedules.add(TrainSchedule(
-                        when (term) {
-                            TrainConst.MELUN_UIC -> "Melun"
-                            TrainConst.YERRES_UIC -> "Yerres"
-                            TrainConst.GDL_UIC_1 -> "Gare de lyon 1"
-                            TrainConst.GDL_UIC_2 -> "Gare de lyon 2"
-                            else -> "Term: " + term
-                        },
+                        trainUicToName(term),
                         "" + date,
                         miss + " - " + num))
             }

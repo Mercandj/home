@@ -7,6 +7,7 @@ class TrainManagerImpl(
         private val trainApi: TrainApi,
         private val mainThreadPost: MainThreadPost) : TrainManager {
 
+    private val trainSyncListeners = ArrayList<TrainManager.TrainSyncListener>()
     private val trainTraffics = HashMap<Long, TrainTraffic?>()
     private val trainTrafficListeners = ArrayList<TrainManager.TrainTrafficListener>()
     private val trainSchedules = HashMap<Long, TrainSchedules?>()
@@ -22,7 +23,19 @@ class TrainManagerImpl(
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_BOISSY_A, trainApi.getTrainSchedules(TrainManager.SCHEDULES_BOISSY_A))
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_YERRES_D, trainApi.getTrainSchedules(TrainManager.SCHEDULES_YERRES_D))
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_GARE_DE_LYON_D, trainApi.getTrainSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_D))
+            notifyTrainSyncListener()
         }
+    }
+
+    override fun registerTrainSyncListener(listener: TrainManager.TrainSyncListener) {
+        if (trainSyncListeners.contains(listener)) {
+            return
+        }
+        trainSyncListeners.add(listener)
+    }
+
+    override fun unregisterTrainSyncListener(listener: TrainManager.TrainSyncListener) {
+        trainSyncListeners.remove(listener)
     }
 
     override fun getTrainTraffic(trainTrafficType: Long): TrainTraffic? {
@@ -53,6 +66,16 @@ class TrainManagerImpl(
 
     override fun unregisterTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener) {
         trainSchedulesListeners.remove(listener)
+    }
+
+    private fun notifyTrainSyncListener() {
+        if (!mainThreadPost.isOnMainThread) {
+            mainThreadPost.post(Runnable { notifyTrainSyncListener() })
+            return
+        }
+        for (listener in trainSyncListeners) {
+            listener.onTrainSyncFinished()
+        }
     }
 
     private fun notifyTrainTrafficListener(

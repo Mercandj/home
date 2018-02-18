@@ -15,18 +15,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MainAdapter
+    private lateinit var trainManager: TrainManager
+    private val trainSyncListener = createTrainSyncListener()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.activity_main_recycler_view)
         recyclerView.layoutManager = createLayoutManager()
+        trainManager = CoreGraph.get().provideTrainManager()
+        trainManager.registerTrainSyncListener(trainSyncListener)
 
         adapter = MainAdapter(createOnTrainTrafficClickListener())
         swipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
-            adapter.notifyDataSetChanged()
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout.isRefreshing = true
+            trainManager.sync()
         }
         recyclerView.adapter = adapter
 
@@ -43,7 +47,22 @@ class MainActivity : AppCompatActivity() {
         adapter.setViewModel(traffics, schedules)
 
         if (savedInstanceState == null) {
-            CoreGraph.get().provideTrainManager().sync()
+            trainManager.sync()
+        }
+    }
+
+    override fun onDestroy() {
+        trainManager.unregisterTrainSyncListener(trainSyncListener)
+        super.onDestroy()
+    }
+
+    private fun createTrainSyncListener(): TrainManager.TrainSyncListener {
+        return object : TrainManager.TrainSyncListener {
+            override fun onTrainSyncFinished() {
+                adapter.notifyDataSetChanged()
+                swipeRefreshLayout.isRefreshing = false
+            }
+
         }
     }
 
