@@ -14,5 +14,4 @@ class SectionTitleCardView @JvmOverloads constructor(
         setPadding(0, resources.getDimensionPixelOffset(R.dimen.default_space_quart), 0, 0)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.text_size_xl))
     }
-
 }

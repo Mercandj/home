@@ -22,10 +22,17 @@ class TrainConst {
          *
          * https://blogs.infinitesquare.com/posts/iot/afficher-les-prochains-depart-de-ma-gare-rersncf-sur-mon-microsoft-band
          */
-        const val YERRES_UIC = "87682112"
-        const val MELUN_UIC = "87682005"
-        const val GDL_UIC_1 = "87686006"
-        const val GDL_UIC_2 = "87758581"
+        private const val YERRES_UIC = "87682112"
+        private const val MELUN_UIC = "87682005"
+        private const val GDL_UIC_1 = "87686006"
+        private const val GDL_UIC_2 = "87758581"
+        private const val GOUSSAINVILLE_UIC = "87276246"
+        private const val MALESHERBES_UIC = "87684415"
+        private const val MONTEREAU_UIC = "87682302"
+        private const val CORBEIL_ESSONNES_UIC = "87681007"
+        private const val ORRY_LA_VILLE_COYE_LA_FORET_UIC = "87276279"
+        private const val MONTARGIS_UIC = "87684001"
+
         const val SNCF_SCHEDULES_YERRES = "http://api.transilien.com/gare/$YERRES_UIC/depart/"
         const val SNCF_SCHEDULES_GDL = "http://api.transilien.com/gare/$GDL_UIC_1/depart/"
 
@@ -35,6 +42,12 @@ class TrainConst {
                 TrainConst.YERRES_UIC -> "Yerres"
                 TrainConst.GDL_UIC_1 -> "Gare de lyon 1"
                 TrainConst.GDL_UIC_2 -> "Gare de lyon 2"
+                TrainConst.GOUSSAINVILLE_UIC -> "Goussainville"
+                TrainConst.MALESHERBES_UIC -> "Malesherbes"
+                TrainConst.MONTEREAU_UIC -> "Montereau"
+                TrainConst.CORBEIL_ESSONNES_UIC -> "Corbeil Essonnes"
+                TrainConst.ORRY_LA_VILLE_COYE_LA_FORET_UIC -> "Orry la Ville Coye la Forêt"
+                TrainConst.MONTARGIS_UIC -> "Montargis"
                 else -> "Term: " + uic
             }
         }

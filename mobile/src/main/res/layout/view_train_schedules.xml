@@ -23,27 +23,16 @@
             tools:text="Title" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/view_train_schedules_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/default_space"
-            android:paddingStart="@dimen/default_space"
-            android:paddingTop="6dp"
-            android:textColor="@color/main_text_black_light"
-            android:textSize="@dimen/text_size_m"
-            tools:text="Subtitle" />
-
-        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/view_train_schedules_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/default_space"
             android:paddingEnd="@dimen/default_space"
             android:paddingStart="@dimen/default_space"
-            android:paddingTop="1dp"
+            android:paddingTop="6dp"
             android:textColor="@color/main_text_black_light"
             android:textSize="@dimen/text_size_s"
-            tools:text="Title" />
+            tools:text="Message" />
 
     </LinearLayout>
 

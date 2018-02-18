@@ -16,7 +16,6 @@ class TrainSchedulesCardView @JvmOverloads constructor(
 ) : CardView(context, attrs, defStyleAttr) {
 
     private val title: TextView
-    private val subtitle: TextView
     private val message: TextView
     private val trainManager: TrainManager
     @TrainManager.Companion.TrainSchedulesType
@@ -26,7 +25,6 @@ class TrainSchedulesCardView @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.view_train_schedules, this)
         title = findViewById(R.id.view_train_schedules_title)
-        subtitle = findViewById(R.id.view_train_schedules_subtitle)
         message = findViewById(R.id.view_train_schedules_message)
         trainManager = CoreGraph.get().provideTrainManager()
         trainSchedulesListener = createTrainSchedulesListener()
@@ -58,14 +56,12 @@ class TrainSchedulesCardView @JvmOverloads constructor(
         val trainSchedules = trainManager.getTrainSchedules(trainSchedulesType)
         if (trainSchedules != null) {
             val schedules = trainSchedules.schedules
-            subtitle.text = "Schedules:"
             message.text = ""
             for (i in 0 until schedules.size) {
                 val trainSchedule = trainSchedules.schedules[i]
                 message.text = message.text.toString() +
-                        (if (i == 0) "\n" else "\n\n") +
-                        trainSchedule.code + "\n" +
-                        trainSchedule.message + "\n" +
+                        (if (i == 0) "" else "\n\n") +
+                        trainSchedule.code + " - " + trainSchedule.message + "\n" +
                         trainSchedule.destination
             }
         } else {
@@ -83,6 +79,5 @@ class TrainSchedulesCardView @JvmOverloads constructor(
 
     interface OnTrainTrafficClickListener {
         fun onTrainTrafficClicked()
-
     }
 }
