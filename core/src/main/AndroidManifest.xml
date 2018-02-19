@@ -3,4 +3,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <application>
+
+        <service
+            android:name=".schedule.SchedulerService"
+            android:exported="false" />
+
+        <receiver android:name=".schedule.ScheduleReceiver" />
+
+    </application>
+
 </manifest>

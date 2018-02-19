@@ -9,6 +9,7 @@ import com.mercandalli.android.home.R
 import com.mercandalli.android.home.train.TrainTrafficCardView
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.train.TrainManager
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             trainManager.sync()
+            testSchedule()
         }
     }
 
@@ -62,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
                 swipeRefreshLayout.isRefreshing = false
             }
-
         }
     }
 
@@ -78,6 +79,12 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun testSchedule() {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + 1)
+        CoreGraph.get().provideScheduleManager().schedule(calendar.timeInMillis)
     }
 
     /**
