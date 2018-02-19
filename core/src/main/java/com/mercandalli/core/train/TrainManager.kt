@@ -33,7 +33,11 @@ interface TrainManager {
         const val SCHEDULES_GARE_DE_LYON_D = 3L
     }
 
-    fun sync()
+    fun synchroniseAsync()
+
+    fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic?
+
+    fun trainTrafficSchedules(@TrainManager.Companion.TrainSchedulesType trainSchedulesType: Long): TrainSchedules?
 
     fun registerTrainSyncListener(listener: TrainManager.TrainSyncListener)
 

@@ -6,7 +6,7 @@ import org.json.XML
 
 data class TrainSchedules(
         @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Long,
-        val schedules: List<TrainSchedule>,
+        public val schedules: List<TrainSchedule>,
         val date: String) {
 
     companion object {

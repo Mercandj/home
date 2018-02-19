@@ -7,6 +7,8 @@ import com.mercandalli.core.clock.ClockModule;
 import com.mercandalli.core.main_thread.MainThreadModule;
 import com.mercandalli.core.main_thread.MainThreadPost;
 import com.mercandalli.core.network.NetworkModule;
+import com.mercandalli.core.notification.NotificationManager;
+import com.mercandalli.core.notification.NotificationModule;
 import com.mercandalli.core.schedule.ScheduleManager;
 import com.mercandalli.core.schedule.SchedulerModule;
 import com.mercandalli.core.train.TrainManager;
@@ -39,6 +41,7 @@ public class CoreGraph {
     private final WeatherManager weatherManager;
     private final TrainManager trainManager;
     private final ScheduleManager scheduleManager;
+    private final NotificationManager notificationManager;
 
     private CoreGraph(Application application) {
         NetworkModule networkModule = new NetworkModule();
@@ -51,6 +54,8 @@ public class CoreGraph {
         weatherManager = weatherModule.provideWeatherManager();
         TrainModule trainModule = new TrainModule(okHttpClient, mainThreadPost);
         trainManager = trainModule.provideTrainManager();
+        NotificationModule notificationModule = new NotificationModule();
+        notificationManager = notificationModule.provideNotificationManager(application);
         SchedulerModule schedulerModule = new SchedulerModule(application);
         scheduleManager = schedulerModule.provideScheduleManager();
     }
@@ -69,5 +74,9 @@ public class CoreGraph {
 
     public ScheduleManager provideScheduleManager() {
         return scheduleManager;
+    }
+
+    public NotificationManager provideNotificationManager() {
+        return notificationManager;
     }
 }

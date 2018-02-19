@@ -10,6 +10,7 @@ import com.mercandalli.android.home.train.TrainTrafficCardView
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.train.TrainManager
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         swipeRefreshLayout = findViewById(R.id.activity_main_swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = true
-            trainManager.sync()
+            trainManager.synchroniseAsync()
         }
         recyclerView.adapter = adapter
 
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         adapter.setViewModel(traffics, schedules)
 
         if (savedInstanceState == null) {
-            trainManager.sync()
+            trainManager.synchroniseAsync()
             testSchedule()
         }
     }
@@ -83,8 +84,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun testSchedule() {
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + 1)
-        CoreGraph.get().provideScheduleManager().schedule(calendar.timeInMillis)
+        calendar.set(Calendar.MINUTE, 0)
+        CoreGraph.get().provideScheduleManager().scheduleRepeating(
+                calendar.timeInMillis,
+                TimeUnit.HOURS.toMillis(1))
     }
 
     /**

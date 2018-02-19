@@ -13,7 +13,7 @@ class TrainManagerImpl(
     private val trainSchedules = HashMap<Long, TrainSchedules?>()
     private val trainSchedulesListeners = ArrayList<TrainManager.TrainSchedulesListener>()
 
-    override fun sync() {
+    override fun synchroniseAsync() {
         async {
             notifyTrainTrafficListener(TrainManager.TRAFFIC_A, trainApi.getTrainTraffic(TrainManager.TRAFFIC_A))
             notifyTrainTrafficListener(TrainManager.TRAFFIC_D, trainApi.getTrainTraffic(TrainManager.TRAFFIC_D))
@@ -25,6 +25,14 @@ class TrainManagerImpl(
             notifyTrainSchedulesListener(TrainManager.SCHEDULES_GARE_DE_LYON_D, trainApi.getTrainSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_D))
             notifyTrainSyncListener()
         }
+    }
+
+    override fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic? {
+        return trainApi.getTrainTraffic(trainTrafficType)
+    }
+
+    override fun trainTrafficSchedules(trainSchedulesType: Long): TrainSchedules? {
+        return trainApi.getTrainSchedules(trainSchedulesType)
     }
 
     override fun registerTrainSyncListener(listener: TrainManager.TrainSyncListener) {

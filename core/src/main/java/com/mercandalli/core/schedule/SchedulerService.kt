@@ -6,14 +6,33 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.mercandalli.core.main.CoreGraph
+import com.mercandalli.core.train.TrainManager
+import java.util.*
+import java.util.Calendar.HOUR_OF_DAY
+import java.util.Calendar.MINUTE
 
 class SchedulerService : IntentService("SchedulerService") {
 
+    override fun onCreate() {
+        super.onCreate()
+        val notification = createPlayerNotification(this)
+        startForeground(1, notification)
+    }
+
     override fun onHandleIntent(intent: Intent?) {
-        if (intent != null && ACTION_SCHEDULE == intent.action) {
-            val notification = createPlayerNotification(this)
-            startForeground(1, notification)
-        }
+        val coreGraph = CoreGraph.get()
+        val provideTrainManager = coreGraph.provideTrainManager()
+        val trainTrafficD = provideTrainManager.trainTrafficSync(TrainManager.TRAFFIC_D)
+        val trainTrafficA = provideTrainManager.trainTrafficSync(TrainManager.TRAFFIC_A)
+        val trafficSchedulesYerresD = provideTrainManager.trainTrafficSchedules(TrainManager.SCHEDULES_YERRES_D)
+
+        val calendar = Calendar.getInstance()
+        coreGraph.provideNotificationManager().showNotification(
+                calendar.get(HOUR_OF_DAY).toString() + ":" + calendar.get(MINUTE).toString() + "\n\n" +
+                        "TrainTrafficD: " + trainTrafficD?.message + "\n" +
+                        "TrainTrafficA: " + trainTrafficA?.message + "\n\n" +
+                        "TrainSchedulesYerres: " + trafficSchedulesYerresD!!.schedules[0].toString())
     }
 
     companion object {
