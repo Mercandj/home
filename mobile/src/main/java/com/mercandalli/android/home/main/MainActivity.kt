@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import com.mercandalli.android.home.R
+import com.mercandalli.android.home.schedule.ScheduleConst.Companion.scheduleTrafficNotification
 import com.mercandalli.android.home.train.TrainTrafficCardView
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.train.TrainManager
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             trainManager.synchroniseAsync()
-            testSchedule()
+            scheduleTrafficNotification()
         }
     }
 
@@ -80,14 +80,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-    }
-
-    private fun testSchedule() {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MINUTE, 0)
-        CoreGraph.get().provideScheduleManager().scheduleRepeating(
-                calendar.timeInMillis,
-                TimeUnit.HOURS.toMillis(1))
     }
 
     /**

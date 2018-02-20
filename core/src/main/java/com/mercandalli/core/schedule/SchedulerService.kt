@@ -26,13 +26,42 @@ class SchedulerService : IntentService("SchedulerService") {
         val trainTrafficD = provideTrainManager.trainTrafficSync(TrainManager.TRAFFIC_D)
         val trainTrafficA = provideTrainManager.trainTrafficSync(TrainManager.TRAFFIC_A)
         val trafficSchedulesYerresD = provideTrainManager.trainTrafficSchedules(TrainManager.SCHEDULES_YERRES_D)
+        val trafficSchedulesGdlD = provideTrainManager.trainTrafficSchedules(TrainManager.SCHEDULES_GARE_DE_LYON_D)
 
+        val notificationMessage = StringBuilder(hoursMinutes()).append("\n\n")
+        if (trainTrafficD != null) {
+            notificationMessage.append("TrainTrafficD: ").append(trainTrafficD.message).append("\n")
+        }
+        if (trainTrafficA != null) {
+            notificationMessage.append("TrainTrafficA: ").append(trainTrafficA.message).append("\n")
+        }
+        notificationMessage.append("\n")
+        if (trafficSchedulesYerresD != null && trafficSchedulesYerresD.schedules.size > 1) {
+            notificationMessage.append("TrainSchedulesYerres: \n")
+                    .append(trafficSchedulesYerresD.schedules[0].message).append("\n")
+                    .append(trafficSchedulesYerresD.schedules[1].message).append("\n")
+        }
+        notificationMessage.append("\n")
+        if (trafficSchedulesGdlD != null && trafficSchedulesGdlD.schedules.size > 1) {
+            notificationMessage.append("TrainSchedulesGdlD: \n")
+                    .append(trafficSchedulesGdlD.schedules[0].message).append("\n")
+                    .append(trafficSchedulesGdlD.schedules[1].message).append("\n")
+        }
+        coreGraph.provideNotificationManager().showNotification(notificationMessage.toString())
+    }
+
+    private fun hoursMinutes(): String {
         val calendar = Calendar.getInstance()
-        coreGraph.provideNotificationManager().showNotification(
-                calendar.get(HOUR_OF_DAY).toString() + ":" + calendar.get(MINUTE).toString() + "\n\n" +
-                        "TrainTrafficD: " + trainTrafficD?.message + "\n" +
-                        "TrainTrafficA: " + trainTrafficA?.message + "\n\n" +
-                        "TrainSchedulesYerres: " + trafficSchedulesYerresD!!.schedules[0].toString())
+        val hours = calendar.get(HOUR_OF_DAY)
+        val minutes = calendar.get(MINUTE)
+        return toDecimalString(hours) + ":" + toDecimalString(minutes)
+    }
+
+    private fun toDecimalString(nb: Int): String {
+        if (nb > 9) {
+            return nb.toString()
+        }
+        return "0" + nb
     }
 
     companion object {
