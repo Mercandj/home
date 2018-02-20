@@ -2,8 +2,10 @@ package com.mercandalli.core.schedule
 
 interface ScheduleManager {
 
-    fun schedule(timestamp: Long)
+    fun initialize()
 
-    fun scheduleRepeating(timestamp: Long, repeatTime: Long)
+    fun schedule(
+            timestamp: Long,
+            repeatInterval: Long = -1)
 
 }

@@ -6,19 +6,32 @@ import android.app.PendingIntent
 class ScheduleManagerAlarmManager(
         private val alarmManager: AlarmManager,
         private val pendingIntent: PendingIntent) : ScheduleManager {
-    override fun schedule(timestamp: Long) {
-        alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                timestamp,
-                pendingIntent)
+
+    private val alarms = ArrayList<Alarm>()
+
+    override fun initialize() {
+
     }
 
-    override fun scheduleRepeating(timestamp: Long, repeatTime: Long) {
-        alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                timestamp,
-                repeatTime,
-                pendingIntent)
+    override fun schedule(
+            timestamp: Long,
+            repeatInterval: Long) {
+        schedule(Alarm(timestamp, repeatInterval))
+    }
 
+    fun schedule(alarm: Alarm) {
+        if (alarm.repeatInterval <= 0) {
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    alarm.timestamp,
+                    pendingIntent)
+        } else {
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    alarm.timestamp,
+                    alarm.repeatInterval,
+                    pendingIntent)
+        }
+        alarms.add(alarm)
     }
 }

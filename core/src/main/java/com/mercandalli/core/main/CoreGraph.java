@@ -58,6 +58,7 @@ public class CoreGraph {
         notificationManager = notificationModule.provideNotificationManager(application);
         SchedulerModule schedulerModule = new SchedulerModule(application);
         scheduleManager = schedulerModule.provideScheduleManager();
+        scheduleManager.initialize();
     }
 
     public ClockManager provideClockManager() {

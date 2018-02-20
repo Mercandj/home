@@ -76,6 +76,19 @@
 
     </LinearLayout>
 
+
+
+    <Button
+        android:id="@+id/activity_main_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="12dp"
+        android:backgroundTint="@android:color/white"
+        android:text="Distance"
+        android:textColor="#333333"
+        android:textSize="10dp" />
+
     <Button
         android:id="@+id/activity_main_at_launcher"
         android:layout_width="wrap_content"

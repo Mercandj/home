@@ -14,7 +14,10 @@ interface GpioManager {
 
     companion object {
 
-        val GPIO_7_NAME = "BCM7"
+        const val GPIO_7_NAME = "BCM7"
+
+        const val TRIGGER_PIN_NAME = "BCM23"
+        const val ECHO_PIN_NAME = "BCM24"
     }
 
 }
