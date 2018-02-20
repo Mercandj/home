@@ -32,12 +32,23 @@ class MainActivity : AppCompatActivity() {
     private val handler = Handler()
     private var runnableUpdateGpio7: Runnable? = null
     private var gpio7TextView: TextView? = null
+    private var distanceTextView: TextView? = null
 
+    private val databaseReferenceGpio = FirebaseDatabase.getInstance().getReference("gpio")
     private val gpioManager = GpioManagerImpl.instance
     private var gpio7RefreshRate = 300
+    private val gpio7ValueEventListener = createGpio7ValueEventListener()
 
-    private val valueEventListener = createValueEventListener()
-    private val databaseReferenceGpio = FirebaseDatabase.getInstance().getReference("gpio")
+    private val databaseReferenceDistance = FirebaseDatabase.getInstance().getReference("distance")
+    private var distanceOn = true
+    private val distanceValueEventListener = createDistanceValueEventListener()
+
+    private var echoGpio: Gpio? = null
+    private var triggerGpio: Gpio? = null
+
+    private var time1: Long = 0
+    private var time2: Long = 0
+    private var keepBusy: Int = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,29 +64,31 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.activity_main_ip)!!.text = "Ip: " + wifiIpAddress(this)
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
+        distanceTextView = findViewById(R.id.activity_main_distance_output)
 
         gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
         runnableUpdateGpio7 = Runnable { runnableJob() }
         handler.post(runnableUpdateGpio7)
 
-        databaseReferenceGpio.child("7").addValueEventListener(valueEventListener)
+        databaseReferenceGpio.child("7").addValueEventListener(gpio7ValueEventListener)
+        databaseReferenceDistance.child("on").addValueEventListener(distanceValueEventListener)
 
         if (savedInstanceState == null) {
-            //Initialize PeripheralManagerService
+            // Initialize PeripheralManagerService
             val service = PeripheralManagerService()
 
-//List all available GPIOs
+            // List all available GPIOs
             Log.d("jm/debug", "Available GPIOs: " + service.gpioList)
 
             try {
                 // Create GPIO connection.
-                mEcho = service.openGpio(ECHO_PIN_NAME)
+                echoGpio = service.openGpio(ECHO_PIN_NAME)
                 // Configure as an input.
-                mEcho!!.setDirection(Gpio.DIRECTION_IN)
+                echoGpio!!.setDirection(Gpio.DIRECTION_IN)
                 // Enable edge trigger events.
-                mEcho!!.setEdgeTriggerType(Gpio.EDGE_BOTH)
+                echoGpio!!.setEdgeTriggerType(Gpio.EDGE_BOTH)
                 // Set Active type to HIGH, then the HIGH events will be considered as TRUE
-                mEcho!!.setActiveType(Gpio.ACTIVE_HIGH)
+                echoGpio!!.setActiveType(Gpio.ACTIVE_HIGH)
 
             } catch (e: IOException) {
                 Log.e("jm/debug", "Error on PeripheralIO API", e)
@@ -83,32 +96,25 @@ class MainActivity : AppCompatActivity() {
 
             try {
                 // Create GPIO connection.
-                mTrigger = service.openGpio(TRIGGER_PIN_NAME)
+                triggerGpio = service.openGpio(TRIGGER_PIN_NAME)
 
                 // Configure as an output with default LOW (false) value.
-                mTrigger!!.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW)
+                triggerGpio!!.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW)
 
             } catch (e: IOException) {
                 Log.e("jm/debug", "Error on PeripheralIO API", e)
             }
         }
-
 
         findViewById<View>(R.id.activity_main_distance).setOnClickListener {
             readDistance()
         }
     }
 
-
-    private var mEcho: Gpio? = null
-    private var mTrigger: Gpio? = null
-
-    var time1: Long = 0
-    var time2: Long = 0
-    var keepBusy: Int = 0
-
-
     private fun readDistance() {
+        if (!distanceOn) {
+            return
+        }
         Thread(Runnable {
             readDistanceSync()
         }).start()
@@ -117,18 +123,18 @@ class MainActivity : AppCompatActivity() {
     @Throws(IOException::class, InterruptedException::class)
     private fun readDistanceSync() {
         // Just to be sure, set the trigger first to false
-        mTrigger!!.setValue(false)
+        triggerGpio!!.value = false
         Thread.sleep(0, 2000)
 
         // Hold the trigger pin HIGH for at least 10 us
-        mTrigger!!.setValue(true)
+        triggerGpio!!.value = true
         Thread.sleep(0, 10000) //10 microsec
 
         // Reset the trigger pin
-        mTrigger!!.setValue(false)
+        triggerGpio!!.value = false
 
         // Wait for pulse on ECHO pin
-        while (mEcho!!.value === false) {
+        while (!echoGpio!!.value) {
             //long t1 = System.nanoTime();
             //Log.d(TAG, "Echo has not arrived...");
 
@@ -142,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("jm/debug", "Echo ARRIVED!")
 
         // Wait for the end of the pulse on the ECHO pin
-        while (mEcho!!.value === true) {
+        while (echoGpio!!.value) {
             //long t1 = System.nanoTime();
             //Log.d(TAG, "Echo is still coming...");
 
@@ -167,14 +173,18 @@ class MainActivity : AppCompatActivity() {
         //double distance = (pulseWidth / 1000000000.0) * 340.0 / 2.0 * 100.0;
 
         Log.i("jm/debug", "distance: $distance cm")
-
+        runOnUiThread {
+            val distanceInt = distance.toInt()
+            databaseReferenceDistance.child("value").setValue(distanceInt)
+            distanceTextView!!.text = "Distance rate $gpio7RefreshRate : $distanceInt cm"
+        }
     }
-
 
     override fun onDestroy() {
         handler.removeCallbacks(runnableUpdateGpio7)
         gpioManager.close(gpio!!)
-        databaseReferenceGpio.child("7").removeEventListener(valueEventListener)
+        databaseReferenceGpio.child("7").removeEventListener(gpio7ValueEventListener)
+        databaseReferenceDistance.child("on").removeEventListener(distanceValueEventListener)
         super.onDestroy()
     }
 
@@ -190,17 +200,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun runnableJob() {
         gpioManager.write(gpio!!, value)
-        gpio7TextView!!.text = "Gpio7 rate " + gpio7RefreshRate + " ms : " + if (value) "on" else "off"
+        gpio7TextView!!.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
         value = !value
+
+        readDistance()
 
         handler.removeCallbacks(runnableUpdateGpio7)
         handler.postDelayed(runnableUpdateGpio7, gpio7RefreshRate.toLong())
     }
 
-    private fun createValueEventListener(): ValueEventListener {
+    private fun createGpio7ValueEventListener(): ValueEventListener {
         return object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 gpio7RefreshRate = dataSnapshot.getValue<Int>(Int::class.java)!!
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        }
+    }
+
+    private fun createDistanceValueEventListener(): ValueEventListener {
+        return object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                distanceOn = dataSnapshot.getValue<Boolean>(Boolean::class.java)!!
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -223,5 +248,4 @@ class MainActivity : AppCompatActivity() {
             System.loadLibrary("native-lib")
         }
     }
-
 }

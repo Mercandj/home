@@ -54,13 +54,14 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_height"
         android:background="#222222"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/activity_main_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_marginTop="8dp"
             android:text="Ip: "
             android:textColor="#aaaaaa"
             android:textSize="10dp" />
@@ -69,14 +70,21 @@
             android:id="@+id/activity_main_gpio7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_marginTop="8dp"
+            android:text="Gpio7 rate 300 ms : on"
+            android:textColor="#aaaaaa"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/activity_main_distance_output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Gpio7 rate 300 ms : on"
             android:textColor="#aaaaaa"
             android:textSize="10dp" />
 
     </LinearLayout>
-
-
 
     <Button
         android:id="@+id/activity_main_distance"
