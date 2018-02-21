@@ -18,6 +18,7 @@ import com.mercandalli.core.train.TrainModule;
 import com.mercandalli.core.weather.WeatherManager;
 import com.mercandalli.core.weather.WeatherModule;
 
+import io.wax911.emojify.EmojiManager;
 import okhttp3.OkHttpClient;
 
 public class CoreGraph {
@@ -35,6 +36,7 @@ public class CoreGraph {
     public static CoreGraph init(Application application) {
         if (instance == null) {
             instance = new CoreGraph(application);
+            EmojiManager.initEmojiData(application);
         }
         return instance;
     }
@@ -68,7 +70,7 @@ public class CoreGraph {
         scheduleManager.initialize();
     }
 
-    public GitLabManager getGitLabManager() {
+    public GitLabManager provideGitLabManager() {
         return gitLabManager;
     }
 

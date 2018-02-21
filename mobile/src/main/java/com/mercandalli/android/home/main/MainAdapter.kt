@@ -10,15 +10,20 @@ import com.mercandalli.android.home.R
 import com.mercandalli.android.home.gpio.GpioCardView
 import com.mercandalli.android.home.train.TrainSchedulesCardView
 import com.mercandalli.android.home.train.TrainTrafficCardView
+import com.mercandalli.core.gitlab.GitLabProject
 import com.mercandalli.core.train.TrainManager
 import com.mercandalli.core.train.TrainTraffic
+import com.mercandalli.core_ui.gitlab.GitLabProjectCardView
 
 class MainAdapter constructor(
-        onTrainTrafficClickListener: TrainTrafficCardView.OnTrainTrafficClickListener)
+        onTrainTrafficClickListener: TrainTrafficCardView.OnTrainTrafficClickListener,
+        onPlaylistClickListener: GitLabProjectCardView.OnGitLabProjectClickListener)
     : ListDelegationAdapter<List<Any>>() {
 
     init {
         delegatesManager.addDelegate(SectionTitleAdapterDelegate())
+        delegatesManager.addDelegate(GitLabProjectAdapterDelegate(onPlaylistClickListener)
+                as AdapterDelegate<List<Any>>)
         delegatesManager.addDelegate(GpioAdapterDelegate())
         delegatesManager.addDelegate(TrainTrafficAdapterDelegate(onTrainTrafficClickListener)
                 as AdapterDelegate<List<Any>>)
@@ -27,14 +32,17 @@ class MainAdapter constructor(
 
     fun setViewModel(
             trainTrafficViewModels: List<TrainTrafficViewModel>,
-            trainSchedulesViewModels: List<TrainSchedulesViewModel>) {
+            trainSchedulesViewModels: List<TrainSchedulesViewModel>,
+            gitLabProjects: List<GitLabProject>) {
         val list = ArrayList<Any>()
+        list.add(SectionTitleViewModel("Gpio"))
+        list.add(GpioViewModel("Android things"))
         list.add(SectionTitleViewModel("Traffic"))
         list.addAll(trainTrafficViewModels)
         list.add(SectionTitleViewModel("Schedules"))
         list.addAll(trainSchedulesViewModels)
-        list.add(SectionTitleViewModel("Gpio"))
-        list.add(GpioViewModel("Android things"))
+        list.add(SectionTitleViewModel("GitLab"))
+        list.addAll(gitLabProjects)
         setItems(list)
         notifyDataSetChanged()
     }
@@ -77,6 +85,45 @@ class MainAdapter constructor(
 
     private data class SectionTitleViewModel(val title: String)
     //endregion SectionTitle
+
+    //region GitLabProject
+    private class GitLabProjectAdapterDelegate constructor(
+            private val onPlaylistClickListener: GitLabProjectCardView.OnGitLabProjectClickListener) :
+            AbsListItemAdapterDelegate<Any, Any, GitLabProjectViewHolder>() {
+
+        override fun isForViewType(o: Any, list: List<Any>, i: Int): Boolean {
+            return o is GitLabProject
+        }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup): GitLabProjectViewHolder {
+            val gitLabProjectCardView = GitLabProjectCardView(viewGroup.context)
+            val layoutParams = StaggeredGridLayoutManager.LayoutParams(
+                    StaggeredGridLayoutManager.LayoutParams.MATCH_PARENT,
+                    StaggeredGridLayoutManager.LayoutParams.WRAP_CONTENT)
+            layoutParams.topMargin = viewGroup.context.resources.getDimensionPixelSize(com.mercandalli.core_ui.R.dimen.default_space_half)
+            layoutParams.bottomMargin = viewGroup.context.resources.getDimensionPixelSize(com.mercandalli.core_ui.R.dimen.default_space_half)
+            layoutParams.marginStart = viewGroup.context.resources.getDimensionPixelSize(com.mercandalli.core_ui.R.dimen.default_space_half)
+            layoutParams.marginEnd = viewGroup.context.resources.getDimensionPixelSize(com.mercandalli.core_ui.R.dimen.default_space_half)
+            layoutParams.isFullSpan = true
+            gitLabProjectCardView.layoutParams = layoutParams
+            gitLabProjectCardView.setOnGitLabProjectClickListener(onPlaylistClickListener)
+            return GitLabProjectViewHolder(gitLabProjectCardView)
+        }
+
+        override fun onBindViewHolder(
+                model: Any, gitLabProjectViewHolder: GitLabProjectViewHolder, list: List<Any>) {
+            gitLabProjectViewHolder.bind(model as GitLabProject)
+        }
+    }
+
+    private class GitLabProjectViewHolder(
+            private val view: GitLabProjectCardView) :
+            RecyclerView.ViewHolder(view) {
+        fun bind(gitLabProject: GitLabProject) {
+            view.setGitLabProject(gitLabProject)
+        }
+    }
+    //endregion GitLabProject
 
     //region Gpio
     private class GpioAdapterDelegate :

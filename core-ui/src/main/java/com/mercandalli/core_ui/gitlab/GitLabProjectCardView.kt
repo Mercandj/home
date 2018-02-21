@@ -42,7 +42,7 @@ class GitLabProjectCardView @JvmOverloads constructor(
         build.add(findViewById(R.id.view_git_lab_project_build_2))
         build.add(findViewById(R.id.view_git_lab_project_build_3))
         build.add(findViewById(R.id.view_git_lab_project_build_4))
-        gitLabManager = CoreGraph.get().gitLabManager
+        gitLabManager = CoreGraph.get().provideGitLabManager()
         name.setOnClickListener {
             onPlaylistClickListener!!.onGitLabProjectClicked(gitLabProject!!)
         }

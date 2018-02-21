@@ -32,7 +32,7 @@ class GitLabProjectsView @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_git_lab_projects, this)
-        gitLabManager = CoreGraph.get().gitLabManager
+        gitLabManager = CoreGraph.get().provideGitLabManager()
         adapter = GitLabAdapter(createOnGitLabProjectClickListener())
         swipeRefreshLayout = findViewById(R.id.view_git_lab_projects_swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener {

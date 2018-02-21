@@ -25,10 +25,20 @@ import kotlinx.coroutines.experimental.async
     }
 
     override fun getGitLabProjects(): List<GitLabProject> {
-        return ArrayList<GitLabProject>(gitLabProjects)
+        val list = ArrayList<GitLabProject>()
+        @Suppress("LoopToCallChain")
+        for (gitLabProject in gitLabProjects) {
+            if (gitLabBuilds.containsKey(gitLabProject.id)) {
+                list.add(gitLabProject)
+            }
+        }
+        return list
     }
 
     override fun getGitLabBuild(gitLabProjectId: Int): List<GitLabBuild> {
+        if (!gitLabBuilds.containsKey(gitLabProjectId)) {
+            return ArrayList()
+        }
         return ArrayList<GitLabBuild>(gitLabBuilds[gitLabProjectId])
     }
 
@@ -45,16 +55,23 @@ import kotlinx.coroutines.experimental.async
 
     private suspend fun syncSync() {
         val gitLabProjectJson = gitLabApi.getGitLabProject()
-        val gitLabProjects = gitLabProjectParser.parse(gitLabProjectJson)
-        for (gitLabProject in gitLabProjects) {
-            val gitLabBuildsDeferred = async(CommonPool) {
-                val gitLabBuildsJson = gitLabApi.getGitLabBuild(gitLabProject.id)
-                gitLabBuildParser.parse(gitLabBuildsJson, 4)
+        val gitLabProjects = gitLabProjectParser.parse(gitLabProjectJson).toMutableList()
+        updateGitLabProjects(gitLabProjects)
+        val listIterator = gitLabProjects.listIterator()
+        while (listIterator.hasNext()) {
+            val gitLabProject = listIterator.next()
+            val gitLabBuildsJson = gitLabApi.getGitLabBuild(gitLabProject.id)
+            val gitLabBuilds = gitLabBuildParser.parse(gitLabBuildsJson, 4)
+            if (gitLabBuilds.isEmpty()) {
+                listIterator.remove()
+            } else {
+                updateGitLabBuild(gitLabProject.id, gitLabBuilds)
+                notifyListener()
             }
-            updateGitLabBuild(gitLabProject.id, gitLabBuildsDeferred.await())
         }
         updateGitLabProjects(gitLabProjects)
         notifyListener()
+        isSyncing = false
     }
 
     private fun updateGitLabProjects(gitLabProjects: List<GitLabProject>) {
@@ -85,7 +102,6 @@ import kotlinx.coroutines.experimental.async
             })
             return
         }
-        isSyncing = false
         for (listener in listeners) {
             listener.onGitLabProjectChanged()
         }
