@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.mercandalli.core.clock.ClockManager;
 import com.mercandalli.core.clock.ClockModule;
+import com.mercandalli.core.gitlab.GitLabManager;
+import com.mercandalli.core.gitlab.GitLabModule;
 import com.mercandalli.core.main_thread.MainThreadModule;
 import com.mercandalli.core.main_thread.MainThreadPost;
 import com.mercandalli.core.network.NetworkModule;
@@ -37,6 +39,7 @@ public class CoreGraph {
         return instance;
     }
 
+    private final GitLabManager gitLabManager;
     private final ClockManager clockManager;
     private final WeatherManager weatherManager;
     private final TrainManager trainManager;
@@ -48,6 +51,10 @@ public class CoreGraph {
         OkHttpClient okHttpClient = networkModule.provideOkHttpClient();
         MainThreadModule mainThreadModule = new MainThreadModule();
         MainThreadPost mainThreadPost = mainThreadModule.provideMainThreadPost();
+        GitLabModule gitLabModule = new GitLabModule(
+                okHttpClient,
+                mainThreadPost);
+        gitLabManager = gitLabModule.provideGitLabManager();
         ClockModule clockModule = new ClockModule();
         clockManager = clockModule.provideClockManager(mainThreadPost);
         WeatherModule weatherModule = new WeatherModule(okHttpClient, mainThreadPost);
@@ -59,6 +66,10 @@ public class CoreGraph {
         SchedulerModule schedulerModule = new SchedulerModule(application);
         scheduleManager = schedulerModule.provideScheduleManager();
         scheduleManager.initialize();
+    }
+
+    public GitLabManager getGitLabManager() {
+        return gitLabManager;
     }
 
     public ClockManager provideClockManager() {

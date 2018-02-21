@@ -26,7 +26,6 @@ class GpioManagerImpl private constructor(
             } catch (e: IOException) {
                 Log.e(TAG, "close error", e)
             }
-
         }
     }
 
@@ -43,7 +42,6 @@ class GpioManagerImpl private constructor(
         } catch (e: IOException) {
             Log.e(TAG, "write error", e)
         }
-
     }
 
     override fun read(gpio: Gpio): Boolean {
@@ -59,8 +57,18 @@ class GpioManagerImpl private constructor(
         } catch (e: IOException) {
             Log.e(TAG, "Error read gpio " + gpio, e)
         }
-
         return false
+    }
+    override fun startDistanceMeasure() {
+
+    }
+
+    override fun stopDistanceMeasure() {
+
+    }
+
+    override fun distanceMeasureSync() {
+
     }
 
     companion object {

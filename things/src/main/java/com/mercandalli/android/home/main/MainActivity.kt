@@ -105,10 +105,6 @@ class MainActivity : AppCompatActivity() {
                 Log.e("jm/debug", "Error on PeripheralIO API", e)
             }
         }
-
-        findViewById<View>(R.id.activity_main_distance).setOnClickListener {
-            readDistance()
-        }
     }
 
     private fun readDistance() {

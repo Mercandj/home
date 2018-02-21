@@ -12,6 +12,12 @@ interface GpioManager {
 
     fun read(gpio: Gpio): Boolean
 
+    fun startDistanceMeasure()
+
+    fun stopDistanceMeasure()
+
+    fun distanceMeasureSync()
+
     companion object {
 
         const val GPIO_7_NAME = "BCM7"

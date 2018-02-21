@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="toolbar_height">50dp</dimen>
+    <dimen name="toolbar_height_2">128dp</dimen>
+
     <!-- Default values -->
     <dimen name="default_space_quart">2dp</dimen>
     <dimen name="default_space_half">4dp</dimen>

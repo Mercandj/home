@@ -7,7 +7,7 @@
         android:id="@+id/activity_main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:background="@color/colorPrimary">
+        android:background="#000000">
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/default_space_half"
+                android:layout_marginEnd="@dimen/default_space_1_5"
                 android:layout_marginStart="@dimen/default_space"
                 android:gravity="center"
                 android:textColor="@android:color/white"
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_height"
-        android:background="#222222"
+        android:background="#0a0a0a"
         android:orientation="vertical"
         android:padding="12dp">
 
@@ -63,39 +63,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Ip: "
-            android:textColor="#aaaaaa"
+            android:textColor="#777777"
             android:textSize="10dp" />
 
         <TextView
             android:id="@+id/activity_main_gpio7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Gpio7 rate 300 ms : on"
-            android:textColor="#aaaaaa"
+            android:textColor="#777777"
             android:textSize="10dp" />
 
         <TextView
             android:id="@+id/activity_main_distance_output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Gpio7 rate 300 ms : on"
-            android:textColor="#aaaaaa"
+            android:textColor="#777777"
             android:textSize="10dp" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/activity_main_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="12dp"
-        android:backgroundTint="@android:color/white"
-        android:text="Distance"
-        android:textColor="#333333"
-        android:textSize="10dp" />
 
     <Button
         android:id="@+id/activity_main_at_launcher"
@@ -103,9 +92,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="12dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@android:color/black"
         android:text="Open android things launcher"
-        android:textColor="#333333"
+        android:textColor="#444444"
         android:textSize="10dp" />
 
     <View
