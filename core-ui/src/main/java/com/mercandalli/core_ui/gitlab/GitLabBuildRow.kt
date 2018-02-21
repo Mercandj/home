@@ -64,7 +64,7 @@ class GitLabBuildRow @JvmOverloads constructor(
 
     private fun getUrlWithHeaders(url: String): GlideUrl {
         return GlideUrl(url, LazyHeaders.Builder()
-                .addHeader("Private-Token", GitLabConst.PRIVATE_TOKEN)
+                .addHeader("Private-Token", GitLabConst.GITLAB_PRIVATE_TOKEN)
                 .build())
     }
 }
