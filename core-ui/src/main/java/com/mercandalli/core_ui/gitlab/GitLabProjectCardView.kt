@@ -29,7 +29,7 @@ class GitLabProjectCardView @JvmOverloads constructor(
     private val name: TextView
     private val lastActivity: TextView
     private val build = ArrayList<GitLabBuildRow>(4)
-    private var onPlaylistClickListener: OnGitLabProjectClickListener? = null
+    private var onGitLabProjectClickListener: OnGitLabProjectClickListener? = null
     private var projectImage: ImageView
 
     init {
@@ -44,7 +44,7 @@ class GitLabProjectCardView @JvmOverloads constructor(
         build.add(findViewById(R.id.view_git_lab_project_build_4))
         gitLabManager = CoreGraph.get().provideGitLabManager()
         name.setOnClickListener {
-            onPlaylistClickListener!!.onGitLabProjectClicked(gitLabProject!!)
+            onGitLabProjectClickListener!!.onGitLabProjectClicked(gitLabProject!!)
         }
     }
 
@@ -59,8 +59,8 @@ class GitLabProjectCardView @JvmOverloads constructor(
         super.onDetachedFromWindow()
     }
 
-    fun setOnGitLabProjectClickListener(onPlaylistClickListener: OnGitLabProjectClickListener) {
-        this.onPlaylistClickListener = onPlaylistClickListener
+    fun setOnGitLabProjectClickListener(listener: OnGitLabProjectClickListener) {
+        this.onGitLabProjectClickListener = listener
     }
 
     fun setGitLabProject(gitLabProject: GitLabProject) {

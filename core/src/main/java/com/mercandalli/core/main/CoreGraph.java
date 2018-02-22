@@ -47,12 +47,13 @@ public class CoreGraph {
     private final TrainManager trainManager;
     private final ScheduleManager scheduleManager;
     private final NotificationManager notificationManager;
+    private final MainThreadPost mainThreadPost;
 
     private CoreGraph(Application application) {
         NetworkModule networkModule = new NetworkModule();
         OkHttpClient okHttpClient = networkModule.provideOkHttpClient();
         MainThreadModule mainThreadModule = new MainThreadModule();
-        MainThreadPost mainThreadPost = mainThreadModule.provideMainThreadPost();
+        mainThreadPost = mainThreadModule.provideMainThreadPost();
         GitLabModule gitLabModule = new GitLabModule(
                 okHttpClient,
                 mainThreadPost);
@@ -92,5 +93,9 @@ public class CoreGraph {
 
     public NotificationManager provideNotificationManager() {
         return notificationManager;
+    }
+
+    public MainThreadPost provideMainThreadPost() {
+        return mainThreadPost;
     }
 }

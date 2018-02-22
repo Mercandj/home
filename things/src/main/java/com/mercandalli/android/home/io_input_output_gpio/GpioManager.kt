@@ -16,7 +16,7 @@ interface GpioManager {
 
     fun stopDistanceMeasure()
 
-    fun distanceMeasureSync()
+    fun getDistance(): Int
 
     companion object {
 
