@@ -18,7 +18,7 @@ class GitLabProjectsView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val refreshRate = 100_000L
+    private val refreshRate = 20_000L
     private val gitLabManager: GitLabManager
     private val gitLabProjectListener = createGitLabProjectListener()
     private val swipeRefreshLayout: SwipeRefreshLayout

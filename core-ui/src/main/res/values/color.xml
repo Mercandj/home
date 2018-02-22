@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="git_lab_projects_bg">#222222</color>
-    <color name="git_lab_project_card_bg">#444444</color>
+    <color name="git_lab_projects_bg">#101010</color>
+    <color name="git_lab_project_card_bg">#191919</color>
     <color name="git_lab_project_title">#ffffff</color>
     <color name="git_lab_project_last_activity">#999999</color>
     <color name="git_lab_build_title">#cccccc</color>
