@@ -64,7 +64,6 @@
             android:id="@+id/activity_main_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#EEEEEE"
             android:clipToPadding="false"
             android:paddingBottom="12dp"
             android:paddingEnd="@dimen/default_space"

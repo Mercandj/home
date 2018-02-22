@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.util.Log
 import com.google.android.things.pio.Gpio
 import com.google.android.things.pio.PeripheralManagerService
+import com.mercandalli.core.fifo.DistanceFifo
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.main_thread.MainThreadPost
 import java.io.IOException
@@ -20,14 +21,14 @@ class GpioManagerImpl private constructor(
     private var keepBusy: Int = 0
 
     private var measureDistanceOn = false
-    private var distancesMeasured = ArrayList<Double>()
+    private var distancesMeasured = DistanceFifo(26)
 
     private val thread = Thread(Runnable {
         while (true) {
             if (measureDistanceOn) {
                 try {
                     readDistanceSync()
-                    Thread.sleep(1)
+                    Thread.sleep(0, 40_000)
                 } catch (e: IOException) {
                     Log.e(TAG, "IOException thread", e)
                 } catch (e: InterruptedException) {
@@ -48,7 +49,7 @@ class GpioManagerImpl private constructor(
         val service = PeripheralManagerService()
 
         // List all available GPIOs
-        Log.d(TAG, "INIT coucou Available GPIOs: " + service.gpioList)
+        Log.d(TAG, "Available GPIOs: " + service.gpioList)
 
         try {
             // Create GPIO connection.
@@ -86,7 +87,6 @@ class GpioManagerImpl private constructor(
         } catch (e: IOException) {
             Log.e(TAG, "open error", e)
         }
-
         return gpio!!
     }
 
@@ -140,25 +140,11 @@ class GpioManagerImpl private constructor(
     }
 
     override fun getDistance(): Int {
-        if (distancesMeasured.isEmpty()) {
-            return -1
-        }
-        val size = distancesMeasured.size
-        if (size < 5) {
-            return distancesMeasured[size - 1].toInt()
-        }
-        val subList = distancesMeasured.subList(size - 5, size - 1)
-        val min = subList.min()
-        val max = subList.max()
-        subList.remove(min)
-        subList.remove(max)
-        return subList.average().toInt()
+        return Math.min(GpioManager.DISTANCE_HARDCODED_MAX, distancesMeasured.distance)
     }
 
     @Throws(IOException::class, InterruptedException::class)
     private fun readDistanceSync() {
-        Log.d(TAG, "readDistanceSync")
-
         // Just to be sure, set the trigger first to false
         triggerGpio!!.value = false
         Thread.sleep(0, 2_000)
@@ -173,32 +159,18 @@ class GpioManagerImpl private constructor(
         val time0 = System.nanoTime()
 
         // Wait for pulse on ECHO pin
-        while (!echoGpio!!.value && System.nanoTime() - time0 < 6_000_000) {
-            //long t1 = System.nanoTime();
-            Log.d(TAG, "Echo has not arrived... " + (System.nanoTime() - time0))
-
+        while (!echoGpio!!.value && System.nanoTime() - time0 < GpioManager.DISTANCE_MAX_TIME_TO_WAIT) {
             // keep the while loop busy
             keepBusy = 0
-
-            //long t2 = System.nanoTime();
-            //Log.d(TAG, "diff 1: " + (t2-t1));
         }
         time1 = System.nanoTime()
-        Log.i(TAG, "Echo ARRIVED!")
 
         // Wait for the end of the pulse on the ECHO pin
-        while (echoGpio!!.value && System.nanoTime() - time1 < 6_000_000) {
-            //long t1 = System.nanoTime()
-            Log.d(TAG, "Echo is still coming... " + (System.nanoTime() - time1))
-
+        while (echoGpio!!.value && System.nanoTime() - time1 < GpioManager.DISTANCE_MAX_TIME_TO_WAIT) {
             // keep the while loop busy
             keepBusy = 1
-
-            //long t2 = System.nanoTime()
-            Log.d(TAG, "diff 2: " + (System.nanoTime() - time1))
         }
         time2 = System.nanoTime()
-        Log.i(TAG, "Echo ENDED!")
 
         // Measure how long the echo pin was held high (pulse width)
         val pulseWidth = time2 - time1
@@ -213,9 +185,6 @@ class GpioManagerImpl private constructor(
 
         Log.i(TAG, "distance: $distance cm")
         mainThreadPost.post(Runnable {
-            if (distancesMeasured.size > 500) {
-                distancesMeasured.clear()
-            }
             distancesMeasured.add(distance)
         })
     }

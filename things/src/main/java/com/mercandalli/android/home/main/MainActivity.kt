@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.KeyEvent
@@ -25,7 +26,9 @@ class MainActivity : AppCompatActivity() {
     private var gpio: Gpio? = null
     private var value: Boolean = false
     private val handler = Handler()
-    private var runnableUpdateGpio7: Runnable? = null
+    private var runnableUpdateGpio7 = Runnable { runnableJob() }
+    private var runnableUpdateDistance = Runnable { runnableDistance() }
+    private var runnableDismissSnackbar = Runnable { snackbar?.dismiss() }
     private var gpio7TextView: TextView? = null
     private var distanceTextView: TextView? = null
 
@@ -36,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private val databaseReferenceDistance = FirebaseDatabase.getInstance().getReference("distance")
     private val distanceValueEventListener = createDistanceValueEventListener()
+    private var snackbar: Snackbar? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,13 +53,17 @@ class MainActivity : AppCompatActivity() {
                     "com.android.iotlauncher.DefaultIoTLauncher")
         }
 
-        findViewById<TextView>(R.id.activity_main_ip)!!.text = "Ip: " + wifiIpAddress(this)
+        findViewById<TextView>(R.id.activity_main_ip)!!.text = wifiIpAddress(this).toString()
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
         distanceTextView = findViewById(R.id.activity_main_distance_output)
 
         gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
-        runnableUpdateGpio7 = Runnable { runnableJob() }
+
+
         handler.post(runnableUpdateGpio7)
+        handler.post(runnableUpdateDistance)
+        snackbar = Snackbar.make(window.decorView.findViewById(android.R.id.content),
+                "Hello, there is something detected", Snackbar.LENGTH_INDEFINITE)
 
         databaseReferenceGpio.child("7").addValueEventListener(gpio7ValueEventListener)
         databaseReferenceDistance.child("on").addValueEventListener(distanceValueEventListener)
@@ -67,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         handler.removeCallbacks(runnableUpdateGpio7)
+        handler.removeCallbacks(runnableUpdateDistance)
+        handler.removeCallbacks(runnableDismissSnackbar)
         gpioManager.close(gpio!!)
         databaseReferenceGpio.child("7").removeEventListener(gpio7ValueEventListener)
         databaseReferenceDistance.child("on").removeEventListener(distanceValueEventListener)
@@ -87,17 +97,27 @@ class MainActivity : AppCompatActivity() {
         gpioManager.write(gpio!!, value)
         gpio7TextView!!.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
         value = !value
-
         syncDistance()
-
         handler.removeCallbacks(runnableUpdateGpio7)
         handler.postDelayed(runnableUpdateGpio7, gpio7RefreshRate.toLong())
+    }
+
+    private fun runnableDistance() {
+        syncDistance()
+        handler.removeCallbacks(runnableUpdateDistance)
+        handler.postDelayed(runnableUpdateDistance, 80)
     }
 
     private fun syncDistance() {
         val distanceInt = gpioManager.getDistance()
         databaseReferenceDistance.child("value").setValue(distanceInt)
-        distanceTextView!!.text = "Distance rate $gpio7RefreshRate : $distanceInt cm"
+        distanceTextView!!.text = "Distance: $distanceInt cm"
+        if (distanceInt < 40) {
+            handler.removeCallbacks(runnableDismissSnackbar)
+            snackbar!!.show()
+        } else {
+            handler.postDelayed(runnableDismissSnackbar, 1_500)
+        }
     }
 
     private fun createGpio7ValueEventListener(): ValueEventListener {
@@ -116,12 +136,14 @@ class MainActivity : AppCompatActivity() {
     private fun createDistanceValueEventListener(): ValueEventListener {
         return object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                /*
                 val distanceOn = dataSnapshot.getValue<Boolean>(Boolean::class.java)!!
                 if (distanceOn) {
                     gpioManager.startDistanceMeasure()
                 } else {
                     gpioManager.stopDistanceMeasure()
                 }
+                */
             }
 
             override fun onCancelled(error: DatabaseError) {

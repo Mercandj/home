@@ -122,21 +122,24 @@ class GitLabProjectCardView @JvmOverloads constructor(
         if (hours > 48) {
             return (hours / 24).toString() + " days ago"
         }
-        if (hours > 24) {
+        if (hours >= 24) {
             return "1 day ago"
         }
         if (hours > 1) {
             return hours.toString() + " hours ago"
         }
-        if (hours > 0) {
+        if (hours == 1L) {
             return "1 hour ago"
         }
         val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMS)
         if (minutes > 1) {
             return minutes.toString() + " minutes ago"
         }
+        if (minutes == 1L) {
+            return "1 minute ago"
+        }
         val seconds = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMS)
-        if (seconds > 0) {
+        if (seconds > 1) {
             return seconds.toString() + " seconds ago"
         }
         return "now"
