@@ -34,20 +34,32 @@ class GitLabBuildRow @JvmOverloads constructor(
     fun setGitLabBuild(gitLabBuild: GitLabBuild) {
         val commit = gitLabBuild.commit
         buildCommitTitle.text = commit.title
-        if (gitLabBuild.pipelineStatus == "success") {
-            buildPipelineStatus.visibility = View.VISIBLE
-            buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green_24dp))
-        } else if (gitLabBuild.pipelineStatus == "failed") {
-            buildPipelineStatus.visibility = View.VISIBLE
-            buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_remove_circle_red_24dp))
-        } else if (gitLabBuild.pipelineStatus == "canceled" || gitLabBuild.pipelineStatus == "skipped") {
-            buildPipelineStatus.visibility = View.VISIBLE
-            buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_cancel_yellow_24dp))
-        } else if (gitLabBuild.pipelineStatus == "pending" || gitLabBuild.pipelineStatus == "running") {
-            buildPipelineStatus.visibility = View.VISIBLE
-            buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sync_blue_24dp))
-        } else {
-            buildPipelineStatus.visibility = View.GONE
+        when (gitLabBuild.pipelineStatus) {
+            "success" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green_24dp))
+            }
+            "failed" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_remove_circle_red_24dp))
+            }
+            "canceled" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_cancel_yellow_24dp))
+            }
+            "skipped" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_redo_purple_24dp))
+            }
+            "running" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sync_blue_24dp))
+            }
+            "pending" -> {
+                buildPipelineStatus.visibility = View.VISIBLE
+                buildPipelineStatus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pause_circle_outline_pink_24dp))
+            }
+            else -> buildPipelineStatus.visibility = View.GONE
         }
         author.text = commit.authorName
 

@@ -20,6 +20,8 @@ import com.mercandalli.android.home.application.AppUtils.launchApp
 import com.mercandalli.android.home.io_input_output_gpio.GpioManager
 import com.mercandalli.android.home.io_input_output_gpio.GpioManagerImpl
 import com.mercandalli.android.home.wifi.WifiUtils.Companion.wifiIpAddress
+import com.mercandalli.core_ui.gitlab.GitLabProjectsView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +30,12 @@ class MainActivity : AppCompatActivity() {
     private val handler = Handler()
     private var runnableUpdateGpio7 = Runnable { runnableJob() }
     private var runnableUpdateDistance = Runnable { runnableDistance() }
-    private var runnableDismissSnackbar = Runnable { snackbar?.dismiss() }
-    private var gpio7TextView: TextView? = null
-    private var distanceTextView: TextView? = null
+    private var runnableDismissSnackbar = Runnable {
+        snackbar?.dismiss()
+    }
+    private lateinit var gpio7TextView: TextView
+    private lateinit var distanceTextView: TextView
+    private lateinit var gitLabProjectsView: GitLabProjectsView
 
     private val databaseReferenceGpio = FirebaseDatabase.getInstance().getReference("gpio")
     private val gpioManager = GpioManagerImpl.getInstanceInternal()
@@ -46,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        gitLabProjectsView = findViewById(R.id.activity_main_gitlabprojectsview)
         findViewById<View>(R.id.activity_main_at_launcher)!!.setOnClickListener {
             launchApp(
                     this,
@@ -59,11 +65,10 @@ class MainActivity : AppCompatActivity() {
 
         gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
 
-
         handler.post(runnableUpdateGpio7)
         handler.post(runnableUpdateDistance)
         snackbar = Snackbar.make(window.decorView.findViewById(android.R.id.content),
-                "Hello, there is something detected", Snackbar.LENGTH_INDEFINITE)
+                "Something detected, so refreshing...", Snackbar.LENGTH_INDEFINITE)
 
         databaseReferenceGpio.child("7").addValueEventListener(gpio7ValueEventListener)
         databaseReferenceDistance.child("on").addValueEventListener(distanceValueEventListener)
@@ -95,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun runnableJob() {
         gpioManager.write(gpio!!, value)
-        gpio7TextView!!.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
+        gpio7TextView.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
         value = !value
         syncDistance()
         handler.removeCallbacks(runnableUpdateGpio7)
@@ -111,10 +116,11 @@ class MainActivity : AppCompatActivity() {
     private fun syncDistance() {
         val distanceInt = gpioManager.getDistance()
         databaseReferenceDistance.child("value").setValue(distanceInt)
-        distanceTextView!!.text = "Distance: $distanceInt cm"
+        distanceTextView.text = "Distance: $distanceInt cm"
         if (distanceInt < 40) {
             handler.removeCallbacks(runnableDismissSnackbar)
             snackbar!!.show()
+            gitLabProjectsView.syncRequest()
         } else {
             handler.postDelayed(runnableDismissSnackbar, 1_500)
         }

@@ -18,7 +18,6 @@ class GitLabProjectsView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val refreshRate = 40_000L
     private val gitLabManager: GitLabManager
     private val gitLabProjectListener = createGitLabProjectListener()
     private val swipeRefreshLayout: SwipeRefreshLayout
@@ -57,19 +56,19 @@ class GitLabProjectsView @JvmOverloads constructor(
         super.onDetachedFromWindow()
     }
 
+    fun syncRequest() {
+        gitLabManager.sync()
+        swipeRefreshLayout.isRefreshing = true
+    }
+
     private fun postSync() {
         removeCallbacks(syncRunnable)
-        postDelayed(syncRunnable, refreshRate)
+        postDelayed(syncRunnable, REFRESH_RATE)
     }
 
     private fun syncView() {
         val gitLabProjects = gitLabManager.getGitLabProjects()
         adapter.setGitLabProjects(gitLabProjects)
-    }
-
-    private fun syncRequest() {
-        val sync = gitLabManager.sync()
-        swipeRefreshLayout.isRefreshing = sync
     }
 
     private fun createGitLabProjectListener(): GitLabManager.GitLabProjectListener {
@@ -95,5 +94,9 @@ class GitLabProjectsView @JvmOverloads constructor(
         return StaggeredGridLayoutManager(
                 context.resources.getInteger(R.integer.grid_nb_column),
                 StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    companion object {
+        private const val REFRESH_RATE = 30_000L
     }
 }
