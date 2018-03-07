@@ -3,7 +3,7 @@ package com.mercandalli.core.train
 import org.json.JSONObject
 
 data class TrainTraffic(
-        @TrainManager.Companion.TrainTrafficType val trainTrafficType: Long,
+        @TrainManager.Companion.TrainTrafficType val trainTrafficType: Int,
         val line: String,
         val slug: String,
         val title: String,
@@ -12,7 +12,7 @@ data class TrainTraffic(
 
     companion object {
         fun fromJson(
-                @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
+                @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
                 json: JSONObject): TrainTraffic {
             val resultJson = json.getJSONObject("result")
             return TrainTraffic(

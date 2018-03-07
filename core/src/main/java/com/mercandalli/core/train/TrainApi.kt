@@ -3,9 +3,9 @@ package com.mercandalli.core.train
 interface TrainApi {
 
     fun getTrainTraffic(
-            @TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic?
+            @TrainManager.Companion.TrainTrafficType trainTrafficType: Int): TrainTraffic?
 
     fun getTrainSchedules(
-            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Long): TrainSchedules?
+            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Int): TrainSchedules?
 
 }

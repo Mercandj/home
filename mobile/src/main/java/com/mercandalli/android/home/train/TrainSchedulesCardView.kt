@@ -19,7 +19,7 @@ class TrainSchedulesCardView @JvmOverloads constructor(
     private val message: TextView
     private val trainManager: TrainManager
     @TrainManager.Companion.TrainSchedulesType
-    private var trainSchedulesType: Long = 0
+    private var trainSchedulesType: Int = 0
     private var trainSchedulesListener: TrainManager.TrainSchedulesListener
 
     init {
@@ -71,7 +71,7 @@ class TrainSchedulesCardView @JvmOverloads constructor(
 
     private fun createTrainSchedulesListener(): TrainManager.TrainSchedulesListener {
         return object : TrainManager.TrainSchedulesListener {
-            override fun onTrainSchedulesChanged(trainSchedulesType: Long) {
+            override fun onTrainSchedulesChanged(trainSchedulesType: Int) {
                 sync()
             }
         }

@@ -13,7 +13,7 @@ class WeatherApiOkHttp(
 
     override fun getWeather(): Weather {
         val request = Request.Builder()
-                .url(WeatherConst.URL)
+                .url(WeatherConst.WEATHER_BILLANCOURT)
                 .build()
         var response: Response? = null
         var body: ResponseBody? = null

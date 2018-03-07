@@ -8,9 +8,9 @@ class TrainManagerImpl(
         private val mainThreadPost: MainThreadPost) : TrainManager {
 
     private val trainSyncListeners = ArrayList<TrainManager.TrainSyncListener>()
-    private val trainTraffics = HashMap<Long, TrainTraffic?>()
+    private val trainTraffics = HashMap<Int, TrainTraffic?>()
     private val trainTrafficListeners = ArrayList<TrainManager.TrainTrafficListener>()
-    private val trainSchedules = HashMap<Long, TrainSchedules?>()
+    private val trainSchedules = HashMap<Int, TrainSchedules?>()
     private val trainSchedulesListeners = ArrayList<TrainManager.TrainSchedulesListener>()
 
     override fun synchroniseAsync() {
@@ -27,11 +27,11 @@ class TrainManagerImpl(
         }
     }
 
-    override fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic? {
+    override fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Int): TrainTraffic? {
         return trainApi.getTrainTraffic(trainTrafficType)
     }
 
-    override fun trainTrafficSchedules(trainSchedulesType: Long): TrainSchedules? {
+    override fun trainTrafficSchedules(trainSchedulesType: Int): TrainSchedules? {
         return trainApi.getTrainSchedules(trainSchedulesType)
     }
 
@@ -46,7 +46,7 @@ class TrainManagerImpl(
         trainSyncListeners.remove(listener)
     }
 
-    override fun getTrainTraffic(trainTrafficType: Long): TrainTraffic? {
+    override fun getTrainTraffic(trainTrafficType: Int): TrainTraffic? {
         return trainTraffics[trainTrafficType]
     }
 
@@ -61,7 +61,7 @@ class TrainManagerImpl(
         trainTrafficListeners.remove(listener)
     }
 
-    override fun getTrainSchedules(trainSchedulesType: Long): TrainSchedules? {
+    override fun getTrainSchedules(trainSchedulesType: Int): TrainSchedules? {
         return trainSchedules[trainSchedulesType]
     }
 
@@ -87,7 +87,7 @@ class TrainManagerImpl(
     }
 
     private fun notifyTrainTrafficListener(
-            @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
+            @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
             trainTraffic: TrainTraffic?) {
         if (!mainThreadPost.isOnMainThread) {
             mainThreadPost.post(Runnable { notifyTrainTrafficListener(trainTrafficType, trainTraffic) })
@@ -100,7 +100,7 @@ class TrainManagerImpl(
     }
 
     private fun notifyTrainSchedulesListener(
-            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Long,
+            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Int,
             trainSchedules: TrainSchedules?) {
         if (!mainThreadPost.isOnMainThread) {
             mainThreadPost.post(Runnable { notifyTrainSchedulesListener(trainSchedulesType, trainSchedules) })

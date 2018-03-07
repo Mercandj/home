@@ -14,10 +14,10 @@ interface TrainManager {
         @Retention(AnnotationRetention.SOURCE)
         annotation class TrainTrafficType
 
-        const val TRAFFIC_A = 0L
-        const val TRAFFIC_D = 1L
-        const val TRAFFIC_9 = 2L
-        const val TRAFFIC_14 = 3L
+        const val TRAFFIC_A = 0
+        const val TRAFFIC_D = 1
+        const val TRAFFIC_9 = 2
+        const val TRAFFIC_14 = 3
 
         @IntDef(
                 SCHEDULES_GARE_DE_LYON_A,
@@ -27,29 +27,29 @@ interface TrainManager {
         @Retention(AnnotationRetention.SOURCE)
         annotation class TrainSchedulesType
 
-        const val SCHEDULES_GARE_DE_LYON_A = 0L
-        const val SCHEDULES_BOISSY_A = 1L
-        const val SCHEDULES_YERRES_D = 2L
-        const val SCHEDULES_GARE_DE_LYON_D = 3L
+        const val SCHEDULES_GARE_DE_LYON_A = 0
+        const val SCHEDULES_BOISSY_A = 1
+        const val SCHEDULES_YERRES_D = 2
+        const val SCHEDULES_GARE_DE_LYON_D = 3
     }
 
     fun synchroniseAsync()
 
-    fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic?
+    fun trainTrafficSync(@TrainManager.Companion.TrainTrafficType trainTrafficType: Int): TrainTraffic?
 
-    fun trainTrafficSchedules(@TrainManager.Companion.TrainSchedulesType trainSchedulesType: Long): TrainSchedules?
+    fun trainTrafficSchedules(@TrainManager.Companion.TrainSchedulesType trainSchedulesType: Int): TrainSchedules?
 
     fun registerTrainSyncListener(listener: TrainManager.TrainSyncListener)
 
     fun unregisterTrainSyncListener(listener: TrainManager.TrainSyncListener)
 
-    fun getTrainTraffic(@TrainTrafficType trainTrafficType: Long): TrainTraffic?
+    fun getTrainTraffic(@TrainTrafficType trainTrafficType: Int): TrainTraffic?
 
     fun registerTrainTrafficListener(listener: TrainManager.TrainTrafficListener)
 
     fun unregisterTrainTrafficListener(listener: TrainManager.TrainTrafficListener)
 
-    fun getTrainSchedules(@TrainSchedulesType trainSchedulesType: Long): TrainSchedules?
+    fun getTrainSchedules(@TrainSchedulesType trainSchedulesType: Int): TrainSchedules?
 
     fun registerTrainSchedulesListener(listener: TrainManager.TrainSchedulesListener)
 
@@ -60,11 +60,11 @@ interface TrainManager {
     }
 
     interface TrainTrafficListener {
-        fun onTrainTrafficChanged(@TrainTrafficType trainTrafficType: Long)
+        fun onTrainTrafficChanged(@TrainTrafficType trainTrafficType: Int)
     }
 
     interface TrainSchedulesListener {
-        fun onTrainSchedulesChanged(@TrainSchedulesType trainSchedulesType: Long)
+        fun onTrainSchedulesChanged(@TrainSchedulesType trainSchedulesType: Int)
     }
 
 

@@ -13,7 +13,7 @@ class TrainApiOkHttp(
         private val okHttpClient: OkHttpClient) : TrainApi {
 
     override fun getTrainTraffic(
-            @TrainManager.Companion.TrainTrafficType trainTrafficType: Long): TrainTraffic? {
+            @TrainManager.Companion.TrainTrafficType trainTrafficType: Int): TrainTraffic? {
         val url = when (trainTrafficType) {
             TrainManager.TRAFFIC_A -> TrainConst.TRAFFIC_RER_A
             TrainManager.TRAFFIC_D -> TrainConst.TRAFFIC_RER_D
@@ -37,7 +37,7 @@ class TrainApiOkHttp(
         return null
     }
 
-    override fun getTrainSchedules(trainSchedulesType: Long): TrainSchedules? {
+    override fun getTrainSchedules(trainSchedulesType: Int): TrainSchedules? {
         val url = when (trainSchedulesType) {
             TrainManager.SCHEDULES_GARE_DE_LYON_A -> TrainConst.SCHEDULES_GARE_DE_LYON_A
             TrainManager.SCHEDULES_BOISSY_A -> TrainConst.SCHEDULES_BOISSY_A

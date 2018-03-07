@@ -245,7 +245,7 @@ class MainAdapter constructor(
 
     data class TrainSchedulesViewModel(
             val title: String,
-            @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Long,
+            @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Int,
             val trainTraffic: TrainTraffic?)
 
     //endregion TrainSchedules

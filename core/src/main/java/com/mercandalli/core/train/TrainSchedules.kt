@@ -5,13 +5,13 @@ import org.json.JSONObject
 import org.json.XML
 
 data class TrainSchedules(
-        @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Long,
+        @TrainManager.Companion.TrainSchedulesType val trainSchedulesType: Int,
         public val schedules: List<TrainSchedule>,
         val date: String) {
 
     companion object {
         fun fromJson(
-                @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
+                @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
                 json: JSONObject): TrainSchedules {
             val trainSchedules = ArrayList<TrainSchedule>()
             val trainSchedulesJsonArray = json.getJSONObject("result").getJSONArray("schedules")
@@ -32,7 +32,7 @@ data class TrainSchedules(
         }
 
         fun fromXml(
-                @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
+                @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
                 xmlString: String): TrainSchedules {
             val schedules = ArrayList<TrainSchedule>()
             val json = XML.toJSONObject(xmlString)
@@ -63,7 +63,7 @@ data class TrainSchedules(
         }
 
         private fun filterThisTerm(
-                @TrainManager.Companion.TrainTrafficType trainTrafficType: Long,
+                @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
                 termName: String): Boolean {
             if (trainTrafficType == TrainManager.SCHEDULES_YERRES_D && termName == "Melun" ||
                     trainTrafficType == TrainManager.SCHEDULES_GARE_DE_LYON_D && termName != "Melun" ||
