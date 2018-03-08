@@ -1,6 +1,6 @@
 package com.mercandalli.core.gitlab
 
-class GitLabConstTemplate {
+class GitLabConst {
 
     companion object {
         var GITLAB_PRIVATE_TOKEN = ""

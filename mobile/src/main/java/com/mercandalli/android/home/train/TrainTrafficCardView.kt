@@ -20,7 +20,7 @@ class TrainTrafficCardView @JvmOverloads constructor(
     private val subtitle: TextView
     private val message: TextView
     @TrainManager.Companion.TrainTrafficType
-    private var trainTrafficType: Long = 0
+    private var trainTrafficType: Int = 0
     private var trainTrafficListener: TrainManager.TrainTrafficListener
 
     init {

@@ -204,7 +204,7 @@ class MainAdapter constructor(
 
     data class TrainTrafficViewModel(
             val title: String,
-            @TrainManager.Companion.TrainTrafficType val trainTrafficType: Long,
+            @TrainManager.Companion.TrainTrafficType val trainTrafficType: Int,
             val trainTraffic: TrainTraffic?)
     //endregion TrainTraffic
 
