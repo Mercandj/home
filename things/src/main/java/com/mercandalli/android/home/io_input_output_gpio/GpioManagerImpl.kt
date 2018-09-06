@@ -3,14 +3,14 @@ package com.mercandalli.android.home.io_input_output_gpio
 import android.content.ContentValues
 import android.util.Log
 import com.google.android.things.pio.Gpio
-import com.google.android.things.pio.PeripheralManagerService
+import com.google.android.things.pio.PeripheralManager
 import com.mercandalli.core.fifo.DistanceFifo
 import com.mercandalli.core.main.CoreGraph
 import com.mercandalli.core.main_thread.MainThreadPost
 import java.io.IOException
 
 class GpioManagerImpl private constructor(
-        private val peripheralManagerService: PeripheralManagerService,
+        private val peripheralManagerService: PeripheralManager,
         private val mainThreadPost: MainThreadPost) : GpioManager {
 
     private var echoGpio: Gpio? = null
@@ -46,7 +46,7 @@ class GpioManagerImpl private constructor(
 
     init {
         // Initialize PeripheralManagerService
-        val service = PeripheralManagerService()
+        val service = peripheralManagerService
 
         // List all available GPIOs
         Log.d(TAG, "Available GPIOs: " + service.gpioList)
@@ -126,7 +126,7 @@ class GpioManagerImpl private constructor(
             // Read the active high pin state
             return gpio.value
         } catch (e: IOException) {
-            Log.e(TAG, "Error read gpio " + gpio, e)
+            Log.e(TAG, "Error read gpio $gpio", e)
         }
         return false
     }
@@ -191,7 +191,7 @@ class GpioManagerImpl private constructor(
 
     companion object {
 
-        private val TAG = "GpioManager jm/debug"
+        private const val TAG = "GpioManager jm/debug"
 
         @JvmStatic
         private var instance: GpioManager? = null
@@ -200,7 +200,7 @@ class GpioManagerImpl private constructor(
             if (instance == null) {
                 Log.d(TAG, "Create GpioManagerImpl")
                 instance = GpioManagerImpl(
-                        PeripheralManagerService(),
+                        PeripheralManager.getInstance(),
                         CoreGraph.get().provideMainThreadPost())
 
             }

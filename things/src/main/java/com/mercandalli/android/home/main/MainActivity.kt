@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gitLabProjectsView: GitLabProjectsView
 
     private val databaseReferenceGpio = FirebaseDatabase.getInstance().getReference("gpio")
-    private val gpioManager = GpioManagerImpl.getInstanceInternal()
-    private var gpio7RefreshRate = 300
-    private val gpio7ValueEventListener = createGpio7ValueEventListener()
+    //private val gpioManager = GpioManagerImpl.getInstanceInternal()
+    //private var gpio7RefreshRate = 300
+    //private val gpio7ValueEventListener = createGpio7ValueEventListener()
 
     private val databaseReferenceDistance = FirebaseDatabase.getInstance().getReference("distance")
     private val distanceValueEventListener = createDistanceValueEventListener()
@@ -63,28 +63,28 @@ class MainActivity : AppCompatActivity() {
         gpio7TextView = findViewById(R.id.activity_main_gpio7)
         distanceTextView = findViewById(R.id.activity_main_distance_output)
 
-        gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
+        //gpio = gpioManager.open(GpioManager.GPIO_7_NAME)
 
         handler.post(runnableUpdateGpio7)
         handler.post(runnableUpdateDistance)
         snackbar = Snackbar.make(window.decorView.findViewById(android.R.id.content),
                 "Something detected, so refreshing...", Snackbar.LENGTH_INDEFINITE)
 
-        databaseReferenceGpio.child("7").addValueEventListener(gpio7ValueEventListener)
-        databaseReferenceDistance.child("on").addValueEventListener(distanceValueEventListener)
+        //databaseReferenceGpio.child("7").addValueEventListener(gpio7ValueEventListener)
+        //databaseReferenceDistance.child("on").addValueEventListener(distanceValueEventListener)
 
-        if (savedInstanceState == null) {
-            gpioManager.startDistanceMeasure()
-        }
+        //if (savedInstanceState == null) {
+        //    gpioManager.startDistanceMeasure()
+        //}
     }
 
     override fun onDestroy() {
         handler.removeCallbacks(runnableUpdateGpio7)
         handler.removeCallbacks(runnableUpdateDistance)
         handler.removeCallbacks(runnableDismissSnackbar)
-        gpioManager.close(gpio!!)
-        databaseReferenceGpio.child("7").removeEventListener(gpio7ValueEventListener)
-        databaseReferenceDistance.child("on").removeEventListener(distanceValueEventListener)
+        //gpioManager.close(gpio!!)
+        //databaseReferenceGpio.child("7").removeEventListener(gpio7ValueEventListener)
+        //databaseReferenceDistance.child("on").removeEventListener(distanceValueEventListener)
         super.onDestroy()
     }
 
@@ -99,12 +99,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun runnableJob() {
-        gpioManager.write(gpio!!, value)
-        gpio7TextView.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
+        //gpioManager.write(gpio!!, value)
+        //gpio7TextView.text = "Gpio7 rate $gpio7RefreshRate ms : " + if (value) "on" else "off"
         value = !value
         syncDistance()
         handler.removeCallbacks(runnableUpdateGpio7)
-        handler.postDelayed(runnableUpdateGpio7, gpio7RefreshRate.toLong())
+        //handler.postDelayed(runnableUpdateGpio7, gpio7RefreshRate.toLong())
     }
 
     private fun runnableDistance() {
@@ -114,22 +114,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun syncDistance() {
-        val distanceInt = gpioManager.getDistance()
-        databaseReferenceDistance.child("value").setValue(distanceInt)
-        distanceTextView.text = "Distance: $distanceInt cm"
-        if (distanceInt < 40) {
-            handler.removeCallbacks(runnableDismissSnackbar)
-            snackbar!!.show()
-            gitLabProjectsView.syncRequest()
-        } else {
-            handler.postDelayed(runnableDismissSnackbar, 1_500)
-        }
+        //val distanceInt = gpioManager.getDistance()
+        //databaseReferenceDistance.child("value").setValue(distanceInt)
+        //distanceTextView.text = "Distance: $distanceInt cm"
+        //if (distanceInt < 40) {
+        //    handler.removeCallbacks(runnableDismissSnackbar)
+        //    snackbar!!.show()
+        //    gitLabProjectsView.syncRequest()
+        //} else {
+        //    handler.postDelayed(runnableDismissSnackbar, 1_500)
+        //}
     }
 
     private fun createGpio7ValueEventListener(): ValueEventListener {
         return object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                gpio7RefreshRate = dataSnapshot.getValue<Int>(Int::class.java)!!
+                //gpio7RefreshRate = dataSnapshot.getValue<Int>(Int::class.java)!!
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -156,20 +156,6 @@ class MainActivity : AppCompatActivity() {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException())
             }
-        }
-    }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
-
-    companion object {
-
-        // Used to load the 'native-lib' library on application startup.
-        init {
-            System.loadLibrary("native-lib")
         }
     }
 }

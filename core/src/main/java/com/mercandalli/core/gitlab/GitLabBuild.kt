@@ -6,7 +6,8 @@ data class GitLabBuild(
         val id: Int,
         val commit: GitLabCommit,
         val pipelineStatus: String,
-        val userAvatarUrl: String) {
+        val userAvatarUrl: String
+) {
 
     companion object {
         fun fromJson(json: JSONObject): GitLabBuild {
@@ -16,8 +17,8 @@ data class GitLabBuild(
                     if (json.has("pipeline")) json.getJSONObject("pipeline").getString("status")
                     else "",
                     if (json.has("user")) json.getJSONObject("user").getString("avatar_url")
-                    else "")
+                    else ""
+            )
         }
     }
-
 }

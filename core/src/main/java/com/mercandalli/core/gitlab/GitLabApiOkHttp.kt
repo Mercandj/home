@@ -9,12 +9,13 @@ import okhttp3.ResponseBody
 import java.io.IOException
 
 class GitLabApiOkHttp(
-        private val okHttpClient: OkHttpClient) : GitLabApi {
+        private val okHttpClient: OkHttpClient
+) : GitLabApi {
 
     companion object {
-        var URL_FETCH_PROJECTS = GITLAB_DOMAIN + "api/v3/projects/?per_page=60&order_by=last_activity_at"
-        var URL_FETCH_BUILDS = GITLAB_DOMAIN + "api/v3/projects/%projectId/builds"
-        var URL_PIPELINE_BUILDS = "%projectWebUrl/builds/%buildId"
+        private const val API_VERSION = "v4"
+        val URL_FETCH_PROJECTS = GITLAB_DOMAIN + "api/$API_VERSION/projects/?per_page=60&order_by=last_activity_at"
+        val URL_FETCH_BUILDS = GITLAB_DOMAIN + "api/$API_VERSION/projects/%projectId/jobs"
     }
 
     override fun getGitLabProject(): String? {
