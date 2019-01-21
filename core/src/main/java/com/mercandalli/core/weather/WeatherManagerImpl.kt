@@ -1,19 +1,21 @@
 package com.mercandalli.core.weather
 
 import com.mercandalli.core.main_thread.MainThreadPost
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 internal class WeatherManagerImpl(
-        private val weatherApi: WeatherApi,
-        private val mainThreadPost: MainThreadPost) : WeatherManager {
+    private val weatherApi: WeatherApi,
+    private val mainThreadPost: MainThreadPost
+) : WeatherManager {
 
     private val listeners = ArrayList<WeatherManager.WeatherListener>()
 
     private var weather = Weather(-42.0, 1000)
 
     override fun sync() {
-        async(CommonPool) {
+        GlobalScope.async(Dispatchers.Default) {
             innerSync()
         }
     }
@@ -47,7 +49,7 @@ internal class WeatherManagerImpl(
     }
 
     private suspend fun innerSync() {
-        val weatherDelegate = async {
+        val weatherDelegate = GlobalScope.async(Dispatchers.Default) {
             val innerWeather = weatherApi.getWeather()
             innerWeather
         }

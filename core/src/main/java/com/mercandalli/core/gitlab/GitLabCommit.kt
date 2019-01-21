@@ -4,9 +4,10 @@ import io.wax911.emojify.EmojiUtils
 import org.json.JSONObject
 
 data class GitLabCommit(
-        val id: String,
-        val title: String,
-        val authorName: String) {
+    val id: String,
+    val title: String,
+    val authorName: String
+) {
 
     companion object {
         private fun emojifyIfNeeded(input: String): String {
@@ -22,9 +23,10 @@ data class GitLabCommit(
                 commitTitle = emojifyIfNeeded(commitTitle)
             }
             return GitLabCommit(
-                    json.getString("id"),
-                    commitTitle,
-                    json.getString("author_name"))
+                json.getString("id"),
+                commitTitle,
+                json.getString("author_name")
+            )
         }
     }
 

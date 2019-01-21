@@ -1,14 +1,16 @@
 package com.mercandalli.core.gitlab
 
 import com.mercandalli.core.main_thread.MainThreadPost
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 /* package */ class GitLabManagerImpl(
-        private val gitLabApi: GitLabApi,
-        private val gitLabProjectParser: GitLabProjectParser,
-        private val gitLabBuildParser: GitLabBuildParser,
-        private val mainThreadPost: MainThreadPost) : GitLabManager {
+    private val gitLabApi: GitLabApi,
+    private val gitLabProjectParser: GitLabProjectParser,
+    private val gitLabBuildParser: GitLabBuildParser,
+    private val mainThreadPost: MainThreadPost
+) : GitLabManager {
 
     private val gitLabProjects = ArrayList<GitLabProject>()
     private val gitLabBuilds = HashMap<Int, List<GitLabBuild>>()
@@ -20,7 +22,7 @@ import kotlinx.coroutines.experimental.async
             return false
         }
         isSyncing = true
-        async(CommonPool) { syncSync() }
+        GlobalScope.async(Dispatchers.Default) { syncSync() }
         return true
     }
 
@@ -53,7 +55,7 @@ import kotlinx.coroutines.experimental.async
         listeners.remove(listener)
     }
 
-    private suspend fun syncSync() {
+    private fun syncSync() {
         val gitLabProjectJson = gitLabApi.getGitLabProject()
         val gitLabProjects = gitLabProjectParser.parse(gitLabProjectJson).toMutableList()
         updateGitLabProjects(gitLabProjects)

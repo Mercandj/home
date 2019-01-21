@@ -22,7 +22,6 @@ import com.mercandalli.android.home.io_input_output_gpio.GpioManagerImpl
 import com.mercandalli.android.home.wifi.WifiUtils.Companion.wifiIpAddress
 import com.mercandalli.core_ui.gitlab.GitLabProjectsView
 
-
 class MainActivity : AppCompatActivity() {
 
     private var gpio: Gpio? = null

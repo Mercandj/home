@@ -1,11 +1,14 @@
 package com.mercandalli.core.train
 
 import com.mercandalli.core.main_thread.MainThreadPost
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 class TrainManagerImpl(
-        private val trainApi: TrainApi,
-        private val mainThreadPost: MainThreadPost) : TrainManager {
+    private val trainApi: TrainApi,
+    private val mainThreadPost: MainThreadPost
+) : TrainManager {
 
     private val trainSyncListeners = ArrayList<TrainManager.TrainSyncListener>()
     private val trainTraffics = HashMap<Int, TrainTraffic?>()
@@ -14,7 +17,7 @@ class TrainManagerImpl(
     private val trainSchedulesListeners = ArrayList<TrainManager.TrainSchedulesListener>()
 
     override fun synchroniseAsync() {
-        async {
+        GlobalScope.async(Dispatchers.Default) {
             notifyTrainTrafficListener(TrainManager.TRAFFIC_A, trainApi.getTrainTraffic(TrainManager.TRAFFIC_A))
             notifyTrainTrafficListener(TrainManager.TRAFFIC_D, trainApi.getTrainTraffic(TrainManager.TRAFFIC_D))
             notifyTrainTrafficListener(TrainManager.TRAFFIC_9, trainApi.getTrainTraffic(TrainManager.TRAFFIC_9))
@@ -87,8 +90,8 @@ class TrainManagerImpl(
     }
 
     private fun notifyTrainTrafficListener(
-            @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
-            trainTraffic: TrainTraffic?) {
+        @TrainManager.Companion.TrainTrafficType trainTrafficType: Int,
+        trainTraffic: TrainTraffic?) {
         if (!mainThreadPost.isOnMainThread) {
             mainThreadPost.post(Runnable { notifyTrainTrafficListener(trainTrafficType, trainTraffic) })
             return
@@ -100,8 +103,8 @@ class TrainManagerImpl(
     }
 
     private fun notifyTrainSchedulesListener(
-            @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Int,
-            trainSchedules: TrainSchedules?) {
+        @TrainManager.Companion.TrainSchedulesType trainSchedulesType: Int,
+        trainSchedules: TrainSchedules?) {
         if (!mainThreadPost.isOnMainThread) {
             mainThreadPost.post(Runnable { notifyTrainSchedulesListener(trainSchedulesType, trainSchedules) })
             return
